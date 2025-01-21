@@ -2,9 +2,9 @@ import React from "react";
 import Hero from "../components/ui/Hero";
 import Image from "next/image";
 import { poppins } from "../fonts/font";
-import ShopHoverCard from "../components/ShopHoverCard";
 import MyPagination from "../components/ui/MyPagination";
 import Properties from "../components/ui/Properties";
+import ShopPro from "../components/Products/ShopPro";
 
 const Shop = () => {
   return (
@@ -63,8 +63,9 @@ const Shop = () => {
           </div>
         </div>
       </div>
-      <div className={`${poppins.className}`}>
-        <ShopHoverCard />
+
+      <div className="RP-card grid lg:grid-cols-4 xs:grid-cols-2 grid-cols-1 lg:gap-x-20 md:gap-x-5 gap-x-5 lg:gap-y-5 gap-y-10 md:justify-items-center  py-10 lg:px-14 px-7">
+        <ShopPro />
       </div>
       <div>
         <MyPagination />
