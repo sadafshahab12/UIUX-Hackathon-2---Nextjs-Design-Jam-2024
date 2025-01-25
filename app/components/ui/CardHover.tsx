@@ -19,7 +19,7 @@ const CardHover = ({slug}: SlugType) => {
               className="text-[#B88E2F] bg-white rounded-none px-10"
               variant={"outline"}
             >
-              Add to cart
+              Details
             </Button>
           </Link>
         </div>

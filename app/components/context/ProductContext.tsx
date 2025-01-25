@@ -7,18 +7,20 @@ import {
   WishList, // Import WishList type
 } from "@/app/type/dataType";
 import { client } from "@/sanity/lib/client";
-import { groq } from "next-sanity";
 import React, { createContext, useEffect, useState } from "react";
 
-export const ProductContext = createContext<CountContext | undefined>(undefined);
+export const ProductContext = createContext<CountContext | undefined>(
+  undefined
+);
 
 export const ProductProvider = ({ children }: ProductProviderType) => {
   const [count, setCount] = useState<number>(1);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
-  const countIncrement = () => setCount(prevCount => prevCount + 1);
+  const countIncrement = () => setCount((prevCount) => prevCount + 1);
 
-  const countDecrement = () => setCount(prevCount => Math.max(1, prevCount - 1));
+  const countDecrement = () =>
+    setCount((prevCount) => Math.max(1, prevCount - 1));
 
   // Fetching product data from Sanity
   const fetchProductData = async () => {
@@ -62,25 +64,37 @@ export const ProductProvider = ({ children }: ProductProviderType) => {
   }, []);
 
   const [searchQuery, setSearchQuery] = useState("");
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value);
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) =>
+    setSearchQuery(e.target.value);
+  const handleClearSearchQuery = () => {
+    setSearchQuery("");
+  };
 
   const [selectedCategory, setSelectedCategory] = useState<string>("");
-  const handleCategoryChange = (category: string) => setSelectedCategory(category);
+  const handleCategoryChange = (category: string) =>
+    setSelectedCategory(category);
 
-  const filteredProducts = product.filter(furniture => {
-    const matchesSearch = furniture.title.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory === "All" || furniture.title.toLowerCase().includes(selectedCategory.toLowerCase());
+  const filteredProducts = product.filter((furniture) => {
+    const matchesSearch = furniture.title
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+    const matchesCategory =
+      selectedCategory === "All" ||
+      furniture.title.toLowerCase().includes(selectedCategory.toLowerCase());
     return matchesSearch && matchesCategory;
   });
 
   const addToCart = (product: ProductType, quantity: number) => {
-    setCartItems(prevCart => {
-      const existingProductIndex = prevCart.findIndex(item => item._id === product._id);
+    setCartItems((prevCart) => {
+      const existingProductIndex = prevCart.findIndex(
+        (item) => item._id === product._id
+      );
       if (existingProductIndex !== -1) {
         const updatedCart = [...prevCart];
         updatedCart[existingProductIndex] = {
           ...updatedCart[existingProductIndex],
-          quantity: (updatedCart[existingProductIndex].quantity || 0) + quantity,
+          quantity:
+            (updatedCart[existingProductIndex].quantity || 0) + quantity,
         };
         return updatedCart;
       } else {
@@ -90,14 +104,20 @@ export const ProductProvider = ({ children }: ProductProviderType) => {
   };
 
   const removeFromCart = (productId: string) => {
-    setCartItems(prevCart => prevCart.filter(item => item._id !== productId));
+    setCartItems((prevCart) =>
+      prevCart.filter((item) => item._id !== productId)
+    );
   };
 
   const handleAddToWishlist = (product: ProductType, quantity: number = 1) => {
-    const currentWishlist: WishList[] = JSON.parse(localStorage.getItem("wishlist") || "[]");
+    const currentWishlist: WishList[] = JSON.parse(
+      localStorage.getItem("wishlist") || "[]"
+    );
 
     // Check if the product is already in the wishlist
-    const existingProductIndex = currentWishlist.findIndex(item => item._id === product._id);
+    const existingProductIndex = currentWishlist.findIndex(
+      (item) => item._id === product._id
+    );
 
     if (existingProductIndex !== -1) {
       // If the product exists, update its quantity
@@ -123,30 +143,30 @@ export const ProductProvider = ({ children }: ProductProviderType) => {
   const handleRemoveFromWishlist = (productId: string) => {
     // Remove from wishlist state
     const updatedWishlist = wishlist.filter((item) => item._id !== productId);
-  
+
     // Update localStorage with the new wishlist
     localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
-  
+
     // Update the wishlist state
     setWishlist(updatedWishlist);
   };
 
   const handleDecreaseQuantityInWishlist = (product: ProductType) => {
     const updatedWishlist = wishlist
-      .map(item => {
+      .map((item) => {
         if (item._id === product._id && item.quantity > 1) {
           item.quantity -= 1;
         }
         return item;
       })
-      .filter(item => item.quantity > 0); // Remove items with 0 quantity
+      .filter((item) => item.quantity > 0); // Remove items with 0 quantity
 
     setWishlist(updatedWishlist);
     localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
   };
 
   const handleIncreaseQuantityInWishlist = (product: ProductType) => {
-    const updatedWishlist = wishlist.map(item => {
+    const updatedWishlist = wishlist.map((item) => {
       if (item._id === product._id) {
         item.quantity += 1;
       }
@@ -172,6 +192,7 @@ export const ProductProvider = ({ children }: ProductProviderType) => {
         removeFromCart,
         addToCart,
         handleAddToWishlist,
+        handleClearSearchQuery,
         wishlist,
         handleRemoveFromWishlist,
       }}

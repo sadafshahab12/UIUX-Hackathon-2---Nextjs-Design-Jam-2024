@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React, { useContext, useEffect, useState } from "react";
 import Hero from "../components/ui/Hero";
 import { poppins } from "../fonts/font";
@@ -8,16 +8,77 @@ import Properties from "../components/ui/Properties";
 import { useRouter } from "next/navigation";
 import { ProductContext } from "../components/context/ProductContext";
 import { CountContext } from "../type/dataType";
-
-
+import Image from "next/image";
 
 const Checkout = () => {
-const route = useRouter();
-const {cartItems}= useContext(ProductContext) as CountContext
-const total = cartItems.reduce(
-  (total, item) => total + item.price * item.quantity,
-  0
-);
+  const route = useRouter();
+  const { cartItems } = useContext(ProductContext) as CountContext;
+  const total = cartItems.reduce(
+    (total, item) => total + item.price * item.quantity,
+    0
+  );
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    companyName: "",
+    country: "Sri Lanka", // default country
+    streetAddress: "",
+    city: "",
+    province: "",
+    zipCode: "",
+    phone: "",
+    email: "",
+    additionalInfo: "",
+  });
+  const [errors, setErrors] = useState<string[]>([]);
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { id, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [id]: value,
+    }));
+  };
+
+  const handleCountryChange = (value: string) => {
+    setFormData((prevData) => ({
+      ...prevData,
+      country: value,
+    }));
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const newErrors: string[] = [];
+    if (!formData.firstName) newErrors.push("First Name is required");
+    if (!formData.lastName) newErrors.push("Last Name is required");
+    if (!formData.streetAddress) newErrors.push("Street Address is required");
+    if (!formData.city) newErrors.push("City is required");
+    if (!formData.province) newErrors.push("Province is required");
+    if (!formData.zipCode) newErrors.push("ZIP Code is required");
+    if (!formData.phone) newErrors.push("Phone is required");
+    if (!formData.email) newErrors.push("Email is required");
+
+    setErrors(newErrors);
+    if (newErrors.length === 0) {
+      // Simulate placing an order
+      console.log("Order placed successfully with data:", formData);
+      alert("Order placed successfully!");
+      // Reset form (optional)
+      setFormData({
+        firstName: "",
+        lastName: "",
+        companyName: "",
+        country: "Sri Lanka",
+        streetAddress: "",
+        city: "",
+        province: "",
+        zipCode: "",
+        phone: "",
+        email: "",
+        additionalInfo: "",
+      });
+    }
+  };
   return (
     <>
       <div>
@@ -27,7 +88,13 @@ const total = cartItems.reduce(
             <h1 className="lg:text-36 sm:text-32 text-24 sm:text-left text-center font-semibold mb-3">
               Billing details
             </h1>
-            <BillingForm />
+            <BillingForm
+              formData={formData}
+              handleInputChange={handleInputChange}
+              handleCountryChange={handleCountryChange}
+              handleSubmit={handleSubmit}
+              errors={errors}
+            />
           </div>
           <div className="product-details lg:p-20 md:p-10 p-5">
             <div className="lg:space-y-10 space-y-4">
@@ -38,10 +105,21 @@ const total = cartItems.reduce(
               {cartItems.map((item, index) => (
                 <div key={index}>
                   <div className="flex-between">
-                    <p className="lg:text-16 text-14">
-                      <span className="text-[#9F9F9F]">{item.title}</span> x{" "}
-                      {item.quantity}
-                    </p>
+                    <div className="flex-no-center gap-4">
+                      <div className="w-[6rem] h-[6rem] rounded-md">
+                        <Image
+                          src={item.imageUrls[0]}
+                          alt={item.slug.current}
+                          width={500}
+                          height={500}
+                          className="w-full h-full object-cover rounded-md"
+                        />
+                      </div>
+                      <p className="lg:text-16 text-14">
+                        <span className="text-[#9F9F9F]">{item.title}</span> x{" "}
+                        {item.quantity}
+                      </p>
+                    </div>
                     <p className="lg:text-16 text-14 font-light">
                       Rs. {item.price * item.quantity}
                     </p>
@@ -97,12 +175,18 @@ const total = cartItems.reduce(
                   <span className="font-semibold">privacy policy</span>.
                 </p>
               </div>
-              <div className="sm:text-center text-left">
-                <Button
+              <div className="sm:text-center text-left flex-no-center gap-5">
+                <Button onClick={handleSubmit}
                   variant="outline"
                   className="lg:px-14 px-12 rounded-lg border-black"
                 >
                   Place order
+                </Button>
+                <Button
+                  variant="outline"
+                  className="lg:px-14 px-12 rounded-lg border-black"
+                >
+                  Place For Rent
                 </Button>
               </div>
             </div>

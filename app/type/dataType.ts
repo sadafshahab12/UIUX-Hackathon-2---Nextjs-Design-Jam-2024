@@ -46,6 +46,7 @@ export interface CountContext {
   handleAddToWishlist: (product: ProductType, quantity: number) => void; // Add product to wishlist with quantity
   wishlist: WishList[]; // List of wishlist items
   handleRemoveFromWishlist: (productId: string) => void; // Remove product from wishlist by ID
+  handleClearSearchQuery: ()=>void
 }
 
 // CartItem extends ProductType to add quantity for cart items

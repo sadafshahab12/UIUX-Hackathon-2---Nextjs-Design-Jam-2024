@@ -1,12 +1,9 @@
 import React from "react";
+import { Skeleton } from "@/components/ui/skeleton";  // Import Shadcn UI Skeleton
 
-type SkeletonBoxProps = React.HTMLAttributes<HTMLDivElement> & {
-  className?: string; // Explicitly define className as an optional string
+const SkeletonBox = ({ className }: { className: string }) => {
+  return <Skeleton className={className} />;
 };
-
-const SkeletonBox: React.FC<SkeletonBoxProps> = ({ className, ...props }) => (
-  <div className={`bg-gray-200 rounded-md ${className || ""}`} {...props}></div>
-);
 
 const LoadingPage = () => {
   const skeletonArray = Array.from({ length: 4 });
