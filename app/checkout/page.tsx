@@ -5,34 +5,19 @@ import { poppins } from "../fonts/font";
 import { Button } from "@/components/ui/button";
 import BillingForm from "../components/ui/BillingForm";
 import Properties from "../components/ui/Properties";
+import { useRouter } from "next/navigation";
 import { ProductContext } from "../components/context/ProductContext";
 import { CountContext } from "../type/dataType";
-import { useRouter, useSearchParams } from "next/navigation";
+
+
 
 const Checkout = () => {
-  const { cart, setCart } = useContext(ProductContext) as CountContext;
-  const [total, setTotal] = useState<number>(0);
-
-  // Calculate the total price
-  const calculateTotal = () => {
-    const totalAmount = cart.reduce((total, item) => total + item.price * item.quantity, 0);
-    setTotal(totalAmount);
-  };
-
-  const searchParams = useSearchParams();
-  const cartParam = searchParams.get("cart");
-
-  useEffect(() => {
-    if (cartParam) {
-      setCart(JSON.parse(cartParam));
-    }
-  }, [cartParam]);
-
-  // Calculate total whenever cart is updated
-  useEffect(() => {
-    calculateTotal();
-  }, [cart]);
-
+const route = useRouter();
+const {cartItems}= useContext(ProductContext) as CountContext
+const total = cartItems.reduce(
+  (total, item) => total + item.price * item.quantity,
+  0
+);
   return (
     <>
       <div>
@@ -50,7 +35,7 @@ const Checkout = () => {
                 <h3>Product</h3>
                 <h3>Subtotal</h3>
               </div>
-              {cart.map((item, index) => (
+              {cartItems.map((item, index) => (
                 <div key={index}>
                   <div className="flex-between">
                     <p className="lg:text-16 text-14">

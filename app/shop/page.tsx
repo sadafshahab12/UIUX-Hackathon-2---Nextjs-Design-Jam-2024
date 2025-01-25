@@ -1,5 +1,5 @@
 "use client";
-import React, { useContext } from "react";
+import React, { Suspense, useContext } from "react";
 import Hero from "../components/ui/Hero";
 
 import Properties from "../components/ui/Properties";
@@ -62,7 +62,9 @@ const Shop = () => {
       </div>
 
       <div className="max-w-7xl mx-auto RP-card grid lg:grid-cols-4 md:grid-cols-3 xs:grid-cols-2 grid-cols-1 lg:gap-x-20 md:gap-x-5 gap-x-5 lg:gap-y-5 gap-y-10 md:justify-items-center  py-10 lg:px-14 px-7">
+        <Suspense>
         <ShopPro products={filteredProducts} />
+        </Suspense>
       </div>
 
       <div className="mt-10">

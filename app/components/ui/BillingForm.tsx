@@ -7,9 +7,26 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import React from "react";
+import React, { useState } from "react";
 
 const BillingForm = () => {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    companyName: "",
+    country: "Sri Lanka", // default country
+    streetAddress: "",
+    city: "",
+    province: "",
+    zipCode: "",
+    phone: "",
+    email: "",
+    additionalInfo: "",
+  })
+
+  const handleInputChange = ()=>{
+    
+  }
   return (
     <div>
       <form action="">
