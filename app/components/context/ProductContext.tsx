@@ -9,40 +9,43 @@ import { client } from "@/sanity/lib/client";
 import { groq } from "next-sanity";
 import React, { createContext, useEffect, useState } from "react";
 
-export const ProductContext = createContext<CountContext | undefined>(
-  undefined
-);
+export const ProductContext = createContext<CountContext | undefined>(undefined);
 
 export const ProductProvider = ({ children }: ProductProviderType) => {
   const [count, setCount] = useState<number>(1);
+  const [cartItems, setCartItems] = useState<CartItem[]>([]); // Correct type for cart items
+
   const countIncrement = () => {
     setCount((prevCount) => prevCount + 1);
   };
+
   const countDecrement = () => {
-    setCount((prevCount) => (prevCount <= 1 ? 1 : prevCount - 1));
+    setCount((prevCount) => Math.max(1, prevCount - 1)); // Ensure count does not go below 1
   };
 
-  // sanity product fecthing
+  // Fetching product data from Sanity
   const fetchProductData = async () => {
     const groqQuery = `*[_type == "furniture"]{
-    title,tags,
+      _id,
+      title,
+      tags,
       isNew, 
       availableForRental,
       stock,
       description,
       dicountPercentage,
-    "imageUrls": productImage[].asset->url,
+      "imageUrls": productImage[].asset->url,
       slug,
       isStock,
       price,
       rentalPricePerDay
-  }`;
+    }`;
+
     try {
-      const fetch = await client.fetch(groq`${groqQuery}`);
-      // console.log(fetch);
-      return fetch;
+      const fetchedData = await client.fetch(groqQuery); // Corrected fetch
+      return fetchedData;
     } catch (error) {
-      console.error(`Error in Fetching home product data : ${error}`);
+      console.error(`Error in Fetching home product data: ${error}`);
       return [];
     }
   };
@@ -60,43 +63,47 @@ export const ProductProvider = ({ children }: ProductProviderType) => {
     };
     getData();
   }, []);
+
   const [searchQuery, setSearchQuery] = useState("");
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(e.target.value);
   };
+
   const [selectedCategory, setSelectedCategory] = useState<string>("");
+
   const handleCategoryChange = (category: string) => {
     setSelectedCategory(category);
   };
+
   const filteredProducts = product.filter((furniture) => {
-    const matchesSearch = furniture.title
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
-    const matchesCategory =
-      selectedCategory === "All" ||
-      furniture.title.toLowerCase().includes(selectedCategory.toLowerCase());
+    const matchesSearch = furniture.title.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesCategory = selectedCategory === "All" || furniture.title.toLowerCase().includes(selectedCategory.toLowerCase());
     return matchesSearch && matchesCategory;
   });
 
-  const [cart, setCart] = useState<CartItem[]>([]);
-  const addToCart = (item: CartItem) => {
-    setCart((prevCart) => {
-      const existingItemIndex = prevCart.findIndex(
-        (cartItem) => cartItem.title === item.title
-      );
-      if (existingItemIndex !== -1) {
+  const addToCart = (product: ProductType, quantity: number) => {
+    setCartItems((prevCart) => {
+      const existingProductIndex = prevCart.findIndex((item) => item._id === product._id);
+      
+      if (existingProductIndex !== -1) {
         const updatedCart = [...prevCart];
-        updatedCart[existingItemIndex].quantity += item.quantity;
+        // Update the quantity by adding the new quantity
+        updatedCart[existingProductIndex] = {
+          ...updatedCart[existingProductIndex],
+          quantity: updatedCart[existingProductIndex].quantity + quantity,
+        };
         return updatedCart;
       } else {
-        [...prevCart, item];
+        // Add the product with the given quantity if it doesn't exist in the cart
+        return [...prevCart, { ...product, quantity }];
       }
     });
   };
-
-  const removeFromCart = (title: string) => {
-    setCart((prevCart) => prevCart.filter((item) => item.title !== title));
+  
+  const removeFromCart = (productId: string) => {
+    setCartItems((prevCart) => prevCart.filter((item) => item._id !== productId));
   };
+
   return (
     <ProductContext.Provider
       value={{
@@ -108,10 +115,9 @@ export const ProductProvider = ({ children }: ProductProviderType) => {
         filteredProducts,
         handleSearchChange,
         handleCategoryChange,
-        cart,
-        setCart,
-        addToCart,
+        cartItems,
         removeFromCart,
+        addToCart
       }}
     >
       <div>{children}</div>
