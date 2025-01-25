@@ -1,54 +1,16 @@
 "use client";
 import Image from "next/image";
-import { groq } from "next-sanity";
-import { client } from "@/sanity/lib/client";
-import { ProductType } from "@/app/type/dataType";
-import { useEffect, useState } from "react";
+import { CountContext, ProductType } from "@/app/type/dataType";
+import { useContext } from "react";
 import CardHover from "../ui/CardHover";
-
-const fetchProductData = async () => {
-  const groqQuery = `*[_type == "furniture"]{
-  title,tags,
-    isNew, 
-    availableForRental,
-    stock,
-    description,
-    dicountPercentage,
-  "imageUrls": productImage[].asset->url,
-    slug,
-    isStock,
-    price,
-    rentalPricePerDay
-}`;
-  try {
-    const fetch = await client.fetch(groq`${groqQuery}`);
-    // console.log(fetch);
-    return fetch;
-  } catch (error) {
-    console.error(`Error in Fetching home product data : ${error}`);
-    return [];
-  }
-};
+import { ProductContext } from "../context/ProductContext";
 
 const HomeProducts = () => {
-  const [product, setProduct] = useState<ProductType[]>([]);
-
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        const data = await fetchProductData();
-        setProduct(data);
-      } catch (error) {
-        console.error(`Error in Fetching data ${error}`);
-      }
-    };
-    getData();
-  }, []);
-
+  const { product } = useContext(ProductContext) as CountContext;
 
   return (
     <>
-      {product.slice(0,8).map((furniture: ProductType, index: number) => {
+      {product.slice(0, 8).map((furniture: ProductType, index: number) => {
         const discountPrice =
           (furniture.price * furniture.dicountPercentage) / 100;
         const discounted = furniture.price - discountPrice;

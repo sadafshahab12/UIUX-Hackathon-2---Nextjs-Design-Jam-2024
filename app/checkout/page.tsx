@@ -1,12 +1,38 @@
-import React from "react";
-
+"use client"
+import React, { useContext, useEffect, useState } from "react";
 import Hero from "../components/ui/Hero";
 import { poppins } from "../fonts/font";
 import { Button } from "@/components/ui/button";
 import BillingForm from "../components/ui/BillingForm";
 import Properties from "../components/ui/Properties";
+import { ProductContext } from "../components/context/ProductContext";
+import { CountContext } from "../type/dataType";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const Checkout = () => {
+  const { cart, setCart } = useContext(ProductContext) as CountContext;
+  const [total, setTotal] = useState<number>(0);
+
+  // Calculate the total price
+  const calculateTotal = () => {
+    const totalAmount = cart.reduce((total, item) => total + item.price * item.quantity, 0);
+    setTotal(totalAmount);
+  };
+
+  const searchParams = useSearchParams();
+  const cartParam = searchParams.get("cart");
+
+  useEffect(() => {
+    if (cartParam) {
+      setCart(JSON.parse(cartParam));
+    }
+  }, [cartParam]);
+
+  // Calculate total whenever cart is updated
+  useEffect(() => {
+    calculateTotal();
+  }, [cart]);
+
   return (
     <>
       <div>
@@ -19,38 +45,45 @@ const Checkout = () => {
             <BillingForm />
           </div>
           <div className="product-details lg:p-20 md:p-10 p-5">
-            <div className="lg:space-y-10 space-y-4 ">
-              <div className=" flex-between lg:text-24 text-20 font-semibold">
+            <div className="lg:space-y-10 space-y-4">
+              <div className="flex-between lg:text-24 text-20 font-semibold">
                 <h3>Product</h3>
                 <h3>Subtotal</h3>
               </div>
-              <div className="flex-between">
-                <p className=" lg:text-16 text-14 ">
-                  <span className="text-[#9F9F9F]">Asgaard sofa</span> x 1
-                </p>
-                <p className="lg:text-16 text-14 font-light">Rs. 250,000.00</p>
-              </div>
+              {cart.map((item, index) => (
+                <div key={index}>
+                  <div className="flex-between">
+                    <p className="lg:text-16 text-14">
+                      <span className="text-[#9F9F9F]">{item.title}</span> x{" "}
+                      {item.quantity}
+                    </p>
+                    <p className="lg:text-16 text-14 font-light">
+                      Rs. {item.price * item.quantity}
+                    </p>
+                  </div>
+                </div>
+              ))}
               <div className="flex-between">
                 <p className="lg:text-16 text-14">Subtotal</p>
-                <p className="flex-between lg:text-16 text-14 font-light ">
-                  Rs. 250,000.00
+                <p className="flex-between lg:text-16 text-14 font-light">
+                  Rs. {total}
                 </p>
               </div>
               <div className="flex-between">
                 <p className="lg:text-16 text-14">Total</p>
                 <p className="flex-between lg:text-24 sm:text-22 text-20 font-bold text-[#B88E2F]">
-                  Rs. 250,000.00
+                  Rs. {total}
                 </p>
               </div>
             </div>
             <div className="border-b border-gray-400 lg:my-5 my-3"></div>
             <div className="payment lg:space-y-8 space-y-5">
-              <div className="flex-no-center gap-4 mb-3 ">
+              <div className="flex-no-center gap-4 mb-3">
                 <p className="b-circle"></p>
                 <p className="lg:text-16 text-14">Direct Bank Transfer</p>
               </div>
               <div>
-                <p className="lg:text-16 text-14  text-gray mb-3">
+                <p className="lg:text-16 text-14 text-gray mb-3">
                   Make your payment directly into our bank account. Please use
                   your Order ID as the payment reference. Your order will not be
                   shipped until the funds have cleared in our account.

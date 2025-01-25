@@ -24,13 +24,22 @@ export interface SlugType {
   slug?: string;
 }
 
-export interface CountContext{
-  count : number,
-  countIncrement : ()=> void
-  countDecrement : ()=> void
+export interface CountContext {
+  searchQuery: string;
+  count: number;
+  countIncrement: () => void;
+  countDecrement: () => void;
+  product: ProductType[];
+  filteredProducts: ProductType[];
+  handleSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleCategoryChange: (category: string) => void;
+
 }
 
-export interface  TagType {
-  tags: string[],
+export interface TagType {
+  tags: string[];
   imageUrls: string[];
 }
+
+
+

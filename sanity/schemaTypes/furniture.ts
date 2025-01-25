@@ -100,5 +100,6 @@ export const furnitureSchema = defineType({
       hidden: ({ document }) =>
         !document?.isStock || !document?.availableForRental, // Hide if isStock is false
     },
+   
   ],
 });
