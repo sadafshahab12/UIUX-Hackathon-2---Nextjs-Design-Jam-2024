@@ -4,6 +4,7 @@ import {
   CountContext,
   ProductProviderType,
   ProductType,
+  WishList, // Import WishList type
 } from "@/app/type/dataType";
 import { client } from "@/sanity/lib/client";
 import { groq } from "next-sanity";
@@ -13,15 +14,11 @@ export const ProductContext = createContext<CountContext | undefined>(undefined)
 
 export const ProductProvider = ({ children }: ProductProviderType) => {
   const [count, setCount] = useState<number>(1);
-  const [cartItems, setCartItems] = useState<CartItem[]>([]); // Correct type for cart items
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
-  const countIncrement = () => {
-    setCount((prevCount) => prevCount + 1);
-  };
+  const countIncrement = () => setCount(prevCount => prevCount + 1);
 
-  const countDecrement = () => {
-    setCount((prevCount) => Math.max(1, prevCount - 1)); // Ensure count does not go below 1
-  };
+  const countDecrement = () => setCount(prevCount => Math.max(1, prevCount - 1));
 
   // Fetching product data from Sanity
   const fetchProductData = async () => {
@@ -42,10 +39,10 @@ export const ProductProvider = ({ children }: ProductProviderType) => {
     }`;
 
     try {
-      const fetchedData = await client.fetch(groqQuery); // Corrected fetch
+      const fetchedData = await client.fetch(groqQuery);
       return fetchedData;
     } catch (error) {
-      console.error(`Error in Fetching home product data: ${error}`);
+      console.error(`Error in Fetching product data: ${error}`);
       return [];
     }
   };
@@ -58,50 +55,106 @@ export const ProductProvider = ({ children }: ProductProviderType) => {
         const data = await fetchProductData();
         setProduct(data);
       } catch (error) {
-        console.error(`Error in Fetching data ${error}`);
+        console.error(`Error fetching data: ${error}`);
       }
     };
     getData();
   }, []);
 
   const [searchQuery, setSearchQuery] = useState("");
-  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSearchQuery(e.target.value);
-  };
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => setSearchQuery(e.target.value);
 
   const [selectedCategory, setSelectedCategory] = useState<string>("");
+  const handleCategoryChange = (category: string) => setSelectedCategory(category);
 
-  const handleCategoryChange = (category: string) => {
-    setSelectedCategory(category);
-  };
-
-  const filteredProducts = product.filter((furniture) => {
+  const filteredProducts = product.filter(furniture => {
     const matchesSearch = furniture.title.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesCategory = selectedCategory === "All" || furniture.title.toLowerCase().includes(selectedCategory.toLowerCase());
     return matchesSearch && matchesCategory;
   });
 
   const addToCart = (product: ProductType, quantity: number) => {
-    setCartItems((prevCart) => {
-      const existingProductIndex = prevCart.findIndex((item) => item._id === product._id);
-      
+    setCartItems(prevCart => {
+      const existingProductIndex = prevCart.findIndex(item => item._id === product._id);
       if (existingProductIndex !== -1) {
         const updatedCart = [...prevCart];
-        // Update the quantity by adding the new quantity
         updatedCart[existingProductIndex] = {
           ...updatedCart[existingProductIndex],
-          quantity: updatedCart[existingProductIndex].quantity + quantity,
+          quantity: (updatedCart[existingProductIndex].quantity || 0) + quantity,
         };
         return updatedCart;
       } else {
-        // Add the product with the given quantity if it doesn't exist in the cart
         return [...prevCart, { ...product, quantity }];
       }
     });
   };
-  
+
   const removeFromCart = (productId: string) => {
-    setCartItems((prevCart) => prevCart.filter((item) => item._id !== productId));
+    setCartItems(prevCart => prevCart.filter(item => item._id !== productId));
+  };
+
+  const handleAddToWishlist = (product: ProductType, quantity: number = 1) => {
+    const currentWishlist: WishList[] = JSON.parse(localStorage.getItem("wishlist") || "[]");
+
+    // Check if the product is already in the wishlist
+    const existingProductIndex = currentWishlist.findIndex(item => item._id === product._id);
+
+    if (existingProductIndex !== -1) {
+      // If the product exists, update its quantity
+      currentWishlist[existingProductIndex].quantity += quantity;
+    } else {
+      // If the product doesn't exist, add it with the given quantity
+      currentWishlist.push({ ...product, quantity });
+    }
+
+    // Store the updated wishlist in localStorage
+    localStorage.setItem("wishlist", JSON.stringify(currentWishlist));
+    setWishlist(currentWishlist); // Update the state to re-render the component
+    alert("Product added to wishlist!");
+  };
+
+  const [wishlist, setWishlist] = useState<WishList[]>([]);
+
+  useEffect(() => {
+    const storedWishlist = JSON.parse(localStorage.getItem("wishlist") || "[]");
+    setWishlist(storedWishlist);
+  }, []);
+
+  const handleRemoveFromWishlist = (productId: string) => {
+    // Remove from wishlist state
+    const updatedWishlist = wishlist.filter((item) => item._id !== productId);
+  
+    // Update localStorage with the new wishlist
+    localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
+  
+    // Update the wishlist state
+    setWishlist(updatedWishlist);
+  };
+
+  const handleDecreaseQuantityInWishlist = (product: ProductType) => {
+    const updatedWishlist = wishlist
+      .map(item => {
+        if (item._id === product._id && item.quantity > 1) {
+          item.quantity -= 1;
+        }
+        return item;
+      })
+      .filter(item => item.quantity > 0); // Remove items with 0 quantity
+
+    setWishlist(updatedWishlist);
+    localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
+  };
+
+  const handleIncreaseQuantityInWishlist = (product: ProductType) => {
+    const updatedWishlist = wishlist.map(item => {
+      if (item._id === product._id) {
+        item.quantity += 1;
+      }
+      return item;
+    });
+
+    setWishlist(updatedWishlist);
+    localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
   };
 
   return (
@@ -117,7 +170,10 @@ export const ProductProvider = ({ children }: ProductProviderType) => {
         handleCategoryChange,
         cartItems,
         removeFromCart,
-        addToCart
+        addToCart,
+        handleAddToWishlist,
+        wishlist,
+        handleRemoveFromWishlist,
       }}
     >
       <div>{children}</div>

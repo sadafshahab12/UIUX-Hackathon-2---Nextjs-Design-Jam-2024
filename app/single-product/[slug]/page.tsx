@@ -21,7 +21,7 @@ import Errpage from "../errpage";
 
 const SingleProduct = () => {
   const { slug }: SlugType = useParams();
-  const { count, countDecrement, countIncrement, addToCart } = useContext(
+  const { count, countDecrement, countIncrement, addToCart,handleAddToWishlist } = useContext(
     ProductContext
   ) as CountContext;
   const [singleProduct, setSingleProduct] = useState<ProductType[]>([]);
@@ -202,8 +202,8 @@ const SingleProduct = () => {
                       Add To Cart
                     </button>
                   </Link>
-                  <button className="border border-slate-800 py-3 lg:px-4 px-2 rounded-md lg:text-16 md:text-14 text-12 w-full xss:col-auto col-span-2" onClick={() => route.push("/productcomparison")}>
-                    + Compare
+                  <button    onClick={() => handleAddToWishlist(singleFurniture, count)} className="border border-slate-800 py-3 lg:px-4 px-2 rounded-md lg:text-16 md:text-14 text-12 w-full xss:col-auto col-span-2" >
+                    Add to WishList 
                   </button>
                 </div>
               </div>
