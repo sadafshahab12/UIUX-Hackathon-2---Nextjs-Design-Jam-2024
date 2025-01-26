@@ -1,19 +1,17 @@
 "use client";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { montserrat, poppins } from "../fonts/font";
 import Link from "next/link";
 import Logo from "./ui/Logo";
-import CartSiderBar from "./CartSiderBar";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars } from "@fortawesome/free-solid-svg-icons";
+import { ProductContext } from "./context/ProductContext";
+import { CountContext } from "../type/dataType";
 
 const Navbar = () => {
-  const [isCartOpen, setIsCartOpen] = useState(false);
+  const {cartItems} = useContext(ProductContext) as CountContext
   const [left, setLeft] = useState("-100%");
-  const toggleCartSideBar = () => {
-    setIsCartOpen((prev) => !prev);
-  };
   const toggleMenu = () => {
     setLeft((prevLeft) => (prevLeft === "-100%" ? "0%" : "-100%"));
   };
@@ -24,12 +22,6 @@ const Navbar = () => {
   return (
     <>
       <header className="fixed top-0 z-50 bg-white w-full">
-        {isCartOpen && (
-          <div
-            className="fixed inset-0 bg-black  bg-opacity-50 z-40 transition-opacity duration-300 "
-            onClick={toggleCartSideBar}
-          ></div>
-        )}
         <nav className="flex justify-between md:px-10 px-8 py-3">
           <div className="menu-bar cursor-pointer flex items-center gap-4">
             <FontAwesomeIcon
@@ -129,28 +121,18 @@ const Navbar = () => {
                 />
               </Link>
             </div>
-            <div
-              className="md:w-[28px] w-[20px] md:h-[28px] h-[20px] cursor-pointer"
-              onClick={toggleCartSideBar}
-            >
-              <Image
+            <div className="md:w-[28px] w-[20px] md:h-[28px] h-[20px] cursor-pointer relative">
+              <Link href={"/cart"}><Image
                 src="/nav-icon/ant-design_shopping-cart-outlined.png"
                 width={500}
                 height={500}
                 alt="nav-icon"
                 className="w-full h-full object-cover"
-              />
+              /></Link>
+              <p className="absolute -top-2 -right-2 bg-yellow-400 w-5 h- text-sm flex justify-center items-center rounded-full">{cartItems.length}</p>
             </div>
           </div>
         </nav>
-
-        <div
-          className={`absolute right-0 top-0 z-50 transform transition-transform duration-300 ease-in ${
-            isCartOpen ? "translate-x-0" : "translate-x-full"
-          }`}
-        >
-          <CartSiderBar isOpen={isCartOpen} onClose={toggleCartSideBar} />
-        </div>
       </header>
     </>
   );
