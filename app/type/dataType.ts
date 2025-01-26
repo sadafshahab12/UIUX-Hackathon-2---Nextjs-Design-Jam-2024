@@ -77,3 +77,16 @@ export interface CategoryType {
   categorySlug: string; // Category URL slug
   imageUrls: string[]; // Images for the category
 }
+export interface FormData {
+  firstName: string;
+  lastName: string;
+  companyName: string;
+  country: string;
+  streetAddress: string;
+  city: string;
+  province: string;
+  zipCode: string;
+  phone: string;
+  email: string;
+  additionalInfo: string;
+}

@@ -151,31 +151,6 @@ export const ProductProvider = ({ children }: ProductProviderType) => {
     setWishlist(updatedWishlist);
   };
 
-  const handleDecreaseQuantityInWishlist = (product: ProductType) => {
-    const updatedWishlist = wishlist
-      .map((item) => {
-        if (item._id === product._id && item.quantity > 1) {
-          item.quantity -= 1;
-        }
-        return item;
-      })
-      .filter((item) => item.quantity > 0); // Remove items with 0 quantity
-
-    setWishlist(updatedWishlist);
-    localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
-  };
-
-  const handleIncreaseQuantityInWishlist = (product: ProductType) => {
-    const updatedWishlist = wishlist.map((item) => {
-      if (item._id === product._id) {
-        item.quantity += 1;
-      }
-      return item;
-    });
-
-    setWishlist(updatedWishlist);
-    localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
-  };
 
   return (
     <ProductContext.Provider

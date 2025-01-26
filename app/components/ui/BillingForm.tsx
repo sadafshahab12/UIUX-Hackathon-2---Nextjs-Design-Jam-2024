@@ -1,3 +1,4 @@
+import { FormData } from "@/app/type/dataType";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
@@ -7,7 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import React, { useState } from "react";
+import React from "react";
 
 const BillingForm = ({
   formData,
@@ -16,7 +17,7 @@ const BillingForm = ({
   handleSubmit,
   errors,
 }: {
-  formData: any;
+  formData: FormData;
   handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   handleCountryChange: (value: string) => void;
   handleSubmit: (e: React.FormEvent) => void;

@@ -1,17 +1,15 @@
 "use client";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import Hero from "../components/ui/Hero";
 import { poppins } from "../fonts/font";
 import { Button } from "@/components/ui/button";
 import BillingForm from "../components/ui/BillingForm";
 import Properties from "../components/ui/Properties";
-import { useRouter } from "next/navigation";
 import { ProductContext } from "../components/context/ProductContext";
 import { CountContext } from "../type/dataType";
 import Image from "next/image";
 
 const Checkout = () => {
-  const route = useRouter();
   const { cartItems } = useContext(ProductContext) as CountContext;
   const total = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
