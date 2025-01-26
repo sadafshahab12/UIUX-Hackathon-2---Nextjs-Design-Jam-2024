@@ -110,7 +110,7 @@ const WishList = () => {
               className="bg-transparent text-black border border-black rounded-[10px] px-10 py-[1.25rem]"
               onClick={handleCheckOut}
             >
-              Move to Cart
+             Check out
             </Button>
           </div>
         </div>

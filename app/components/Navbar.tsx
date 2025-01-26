@@ -10,7 +10,7 @@ import { ProductContext } from "./context/ProductContext";
 import { CountContext } from "../type/dataType";
 
 const Navbar = () => {
-  const {cartItems} = useContext(ProductContext) as CountContext
+  const {cartItems, wishlist} = useContext(ProductContext) as CountContext
   const [left, setLeft] = useState("-100%");
   const toggleMenu = () => {
     setLeft((prevLeft) => (prevLeft === "-100%" ? "0%" : "-100%"));
@@ -110,7 +110,7 @@ const Navbar = () => {
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className="xs:block hidden md:w-[28px] w-[20px] md:h-[28px] h-[20px] cursor-pointer">
+            <div className="xs:block hidden md:w-[28px] w-[20px] md:h-[28px] h-[20px] cursor-pointer relative">
               <Link href="/wishlist">
                 <Image
                   src="/nav-icon/akar-icons_heart.png"
@@ -120,6 +120,7 @@ const Navbar = () => {
                   className="w-full h-full object-cover"
                 />
               </Link>
+              <p className="absolute -top-2 -right-2 bg-yellow-400 w-5 h- text-sm flex justify-center items-center rounded-full">{wishlist.length}</p>
             </div>
             <div className="md:w-[28px] w-[20px] md:h-[28px] h-[20px] cursor-pointer relative">
               <Link href={"/cart"}><Image
