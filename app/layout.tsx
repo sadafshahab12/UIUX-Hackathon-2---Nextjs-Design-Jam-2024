@@ -4,7 +4,7 @@ import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 import { Poppins } from "next/font/google";
 import { ProductProvider } from "./components/context/ProductContext";
-
+import { ClerkProvider } from "@clerk/nextjs";
 const poppins = Poppins({
   weight: ["400", "700"],
   style: ["normal"],
@@ -24,14 +24,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={` ${poppins.className} antialiased`}>
-        <ProductProvider>
-          <Navbar />
-          {children}
-          <Footer />
-        </ProductProvider>
-      </body>
-    </html>
+    <ClerkProvider>
+      <html lang="en">
+        <body className={` ${poppins.className} antialiased`}>
+          <ProductProvider>
+            <Navbar />
+            {children}
+            <Footer />
+          </ProductProvider>
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
