@@ -8,6 +8,7 @@ import {
 } from "@/app/type/dataType";
 import { client } from "@/sanity/lib/client";
 import React, { createContext, useEffect, useState } from "react";
+import Swal from "sweetalert2";
 
 export const ProductContext = createContext<CountContext | undefined>(
   undefined
@@ -101,12 +102,38 @@ export const ProductProvider = ({ children }: ProductProviderType) => {
         return [...prevCart, { ...product, quantity }];
       }
     });
+    Swal.fire({
+      text: `${product.title} add to Cart!`,
+      icon: "success",
+      position: "center",
+      timer: 3000,
+      showConfirmButton: false,
+    });
   };
 
   const removeFromCart = (productId: string) => {
-    setCartItems((prevCart) =>
-      prevCart.filter((item) => item._id !== productId)
-    );
+    Swal.fire({
+      title: "Are You Sure?",
+      text: `You want to remove this item`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, Remove it.",
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setCartItems((prevCart) =>
+          prevCart.filter((item) => item._id !== productId)
+        );
+        Swal.fire({
+          title: "Removed!",
+          text: "Item has been removed successfully.",
+          icon: "success",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      }
+    });
   };
 
   const handleAddToWishlist = (product: ProductType, quantity: number = 1) => {
@@ -130,7 +157,13 @@ export const ProductProvider = ({ children }: ProductProviderType) => {
     // Store the updated wishlist in localStorage
     localStorage.setItem("wishlist", JSON.stringify(currentWishlist));
     setWishlist(currentWishlist); // Update the state to re-render the component
-    alert("Product added to wishlist!");
+    Swal.fire({
+      text: `${product.title} add to Wishlist!`,
+      icon: "success",
+      position: "center",
+      timer: 2000,
+      showConfirmButton: false,
+    });
   };
 
   const [wishlist, setWishlist] = useState<WishList[]>([]);
@@ -143,14 +176,30 @@ export const ProductProvider = ({ children }: ProductProviderType) => {
   const handleRemoveFromWishlist = (productId: string) => {
     // Remove from wishlist state
     const updatedWishlist = wishlist.filter((item) => item._id !== productId);
-
     // Update localStorage with the new wishlist
     localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
-
     // Update the wishlist state
-    setWishlist(updatedWishlist);
+    Swal.fire({
+      title: "Are You Sure?",
+      text: `You want to remove this item`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, Remove it.",
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setWishlist(updatedWishlist);
+        Swal.fire({
+          title: "Removed",
+          text: "Wishlist Item has been removed successfully.",
+          icon: "success",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      }
+    });
   };
-
 
   return (
     <ProductContext.Provider

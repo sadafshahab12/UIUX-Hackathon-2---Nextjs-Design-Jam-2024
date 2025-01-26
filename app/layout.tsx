@@ -5,7 +5,7 @@ import Footer from "./components/Footer";
 import { Poppins } from "next/font/google";
 import { ProductProvider } from "./components/context/ProductContext";
 
- const poppins = Poppins({
+const poppins = Poppins({
   weight: ["400", "700"],
   style: ["normal"],
   subsets: ["latin"],
@@ -28,7 +28,6 @@ export default function RootLayout({
       <body className={` ${poppins.className} antialiased`}>
         <ProductProvider>
           <Navbar />
-
           {children}
           <Footer />
         </ProductProvider>

@@ -101,15 +101,7 @@ const Navbar = () => {
                 className="w-full h-full object-cover"
               />
             </div>
-            <div className="xs:block hidden md:w-[28px] w-[20px] md:h-[28px] h-[20px] cursor-pointer">
-              <Image
-                src="/nav-icon/akar-icons_search.png"
-                width={500}
-                height={500}
-                alt="nav-icon"
-                className="w-full h-full object-cover"
-              />
-            </div>
+   
             <div className="xs:block hidden md:w-[28px] w-[20px] md:h-[28px] h-[20px] cursor-pointer relative">
               <Link href="/wishlist">
                 <Image
