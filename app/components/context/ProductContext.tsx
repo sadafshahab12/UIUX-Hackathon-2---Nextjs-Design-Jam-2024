@@ -7,7 +7,7 @@ import {
   WishList, // Import WishList type
 } from "@/app/type/dataType";
 import { client } from "@/sanity/lib/client";
-import {  useUser } from "@clerk/nextjs";
+import { useUser } from "@clerk/nextjs";
 import React, { createContext, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import { useClerk } from "@clerk/nextjs";
@@ -61,9 +61,10 @@ export const ProductProvider = ({ children }: ProductProviderType) => {
       try {
         const data = await fetchProductData();
         setProduct(data);
-        setLoading(false)
       } catch (error) {
         console.error(`Error fetching data: ${error}`);
+      } finally {
+        setLoading(false);
       }
     };
     getData();
@@ -242,7 +243,7 @@ export const ProductProvider = ({ children }: ProductProviderType) => {
         handleClearSearchQuery,
         wishlist,
         handleRemoveFromWishlist,
-        loading
+        loading,
       }}
     >
       <div>{children}</div>
