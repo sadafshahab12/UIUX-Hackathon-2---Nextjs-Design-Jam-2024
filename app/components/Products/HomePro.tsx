@@ -1,7 +1,7 @@
 "use client";
 import Image from "next/image";
 import { CountContext, ProductType } from "@/app/type/dataType";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import CardHover from "../ui/CardHover";
 import { ProductContext } from "../context/ProductContext";
 import Loading from "./Loading";
