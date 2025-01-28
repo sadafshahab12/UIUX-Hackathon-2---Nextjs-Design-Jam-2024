@@ -3,10 +3,9 @@ import { useUser } from "@clerk/nextjs";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
-
 const Dashboard = () => {
   const { user } = useUser();
-  console.log(user);
+
 
   return (
     <aside className="">

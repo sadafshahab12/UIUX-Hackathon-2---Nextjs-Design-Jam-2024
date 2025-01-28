@@ -1,10 +1,20 @@
 "use client";
-import React from "react";
+import React, { useContext } from "react";
 import Image from "next/image";
-import { ProductType } from "@/app/type/dataType";
+import { CountContext, ProductType } from "@/app/type/dataType";
 import CardHover from "../ui/CardHover";
+import Loading from "./Loading";
+import { ProductContext } from "../context/ProductContext";
 
 const ShopPro = ({ products }: { products: ProductType[] }) => {
+  const {loading} = useContext(ProductContext) as CountContext
+  if (loading) {
+    return (
+  
+        <Loading />
+   
+    );
+  }
   return (
     <>
       {products.map((furniture: ProductType, index: number) => {

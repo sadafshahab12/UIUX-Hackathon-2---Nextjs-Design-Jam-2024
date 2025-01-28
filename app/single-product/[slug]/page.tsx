@@ -232,14 +232,14 @@ const SingleProduct = () => {
                       <CiSquarePlus className="lg:w-8 w-6 lg:h-8 h-6" />
                     </button>
                   </div>
-                  <Link href={"/cart"}>
-                    <button
-                      onClick={() => addToCart(singleFurniture, count)}
-                      className="border border-slate-800 py-3 lg:px-4 px-2 rounded-md lg:text-16 md:text-14 text-12 w-full"
-                    >
-                      Add To Cart
-                    </button>
-                  </Link>
+
+                  <button
+                    onClick={() => addToCart(singleFurniture, count)}
+                    className="border border-slate-800 py-3 lg:px-4 px-2 rounded-md lg:text-16 md:text-14 text-12 w-full"
+                  >
+                    Add To Cart
+                  </button>
+
                   <button
                     onClick={() => handleAddToWishlist(singleFurniture, count)}
                     className="border border-slate-800 py-3 lg:px-4 px-2 rounded-md lg:text-16 md:text-14 text-12 w-full xss:col-auto col-span-2"

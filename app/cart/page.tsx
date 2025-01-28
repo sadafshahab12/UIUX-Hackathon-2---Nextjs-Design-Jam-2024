@@ -36,30 +36,30 @@ const Cart = () => {
       <div>
         <Hero navName="Cart" title="Cart" navLink="/cart" />
       </div>
-      <div className="lg:py-10 xs:py-5 py-3 lg:px-14 xs:px-7 px-3 grid grid-cols-[2fr,1fr] gap-4">
+      <div className="lg:py-10 xs:py-5 py-3 lg:px-14 xs:px-7 px-3 grid md:grid-cols-[2fr,1fr] grid-cols-1 gap-4">
         <div className="part 1">
           <div className="cart-nav sm:mb-10 mb-5 bg-[#F9F1E7] grid grid-cols-6 justify-items-center items-center sm:pl-0 pl-5 py-3">
-            <p className="lg:text-16 sm:text-14 text-12 font-medium">Product</p>
-            <p className="lg:text-16 sm:text-14 text-12 font-medium">Title</p>
-            <p className="lg:text-16 sm:text-14 text-12 font-medium">Price</p>
-            <p className="lg:text-16 sm:text-14 text-12 font-medium">
+            <p className="md:text-16 sm:text-14 xs:text-12 text-10 font-medium">Product</p>
+            <p className="md:text-16 sm:text-14 xs:text-12 text-10 font-medium">Title</p>
+            <p className="md:text-16 sm:text-14 xs:text-12 text-10 font-medium">Price</p>
+            <p className="md:text-16 sm:text-14 xs:text-12 text-10 font-medium">
               Quantity
             </p>
-            <p className="lg:text-16 sm:text-14 text-12 font-medium">
+            <p className="md:text-16 sm:text-14 xs:text-12 text-10 font-medium">
               Subtotal
             </p>
           </div>
 
           <div className="cart-product-details space-y-4">
             {cartItems.length === 0 ? (
-              <p>Your Cart is Empty</p>
+              <p className="md:text-16 sm:text-14 xs:text-12 text-10">Your Cart is Empty</p>
             ) : (
               cartItems.map((item, index) => (
                 <div
                   key={index}
-                  className="product-details grid grid-cols-6 justify-items-center items-center"
+                  className="product-details grid grid-cols-6 gap-4 justify-items-center items-center xs:px-0 xss:px-5 px-2"
                 >
-                  <div className="bg-[#FAF3EA] p-2 lg:w-[108px] w-[90px] lg:h-[105px] h-[90px] rounded-lg">
+                  <div className="bg-[#FAF3EA] sm:p-2 p-1 sm:w-[108px] xss:w-[60px] w-[50px] sm:h-[105px] xss:h-[60px] h-[50px] rounded-lg">
                     <Image
                       src={item.imageUrls[0]}
                       alt="post-img"
@@ -69,17 +69,17 @@ const Cart = () => {
                     />
                   </div>
 
-                  <h1 className="text-gray lg:text-16 sm:text-14 text-12">
+                  <h1 className="text-gray md:text-16 sm:text-14 xs:text-12 text-10">
                     {item.title}
                   </h1>
-                  <p className="lg:text-16 sm:text-14 text-12">{item.price}</p>
-                  <p className="pl-5">{item.quantity}</p>
-                  <p className="lg:text-16 sm:text-14 text-12">
+                  <p className="md:text-16 sm:text-14 xs:text-12 text-10">{item.price}</p>
+                  <p className="pl-5 md:text-16 sm:text-14 xs:text-12 text-10 ">{item.quantity}</p>
+                  <p className="md:text-16 sm:text-14 xs:text-12 text-10">
                     {item.price * item.quantity}
                   </p>
                   <div className="justify-self-center">
                     <IoMdTrash
-                      className="w-6 h-6 cursor-pointer"
+                      className="xs:w-6 w-4 xs:h-6 h-4 cursor-pointer"
                       onClick={() => removeFromCart(item._id)}
                     />
                   </div>

@@ -7,9 +7,10 @@ import {
   WishList, // Import WishList type
 } from "@/app/type/dataType";
 import { client } from "@/sanity/lib/client";
+import {  useUser } from "@clerk/nextjs";
 import React, { createContext, useEffect, useState } from "react";
 import Swal from "sweetalert2";
-
+import { useClerk } from "@clerk/nextjs";
 export const ProductContext = createContext<CountContext | undefined>(
   undefined
 );
@@ -17,6 +18,9 @@ export const ProductContext = createContext<CountContext | undefined>(
 export const ProductProvider = ({ children }: ProductProviderType) => {
   const [count, setCount] = useState<number>(1);
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
+  const { isSignedIn } = useUser();
+  const clerk = useClerk();
+  const [loading, setLoading] = useState(true);
 
   const countIncrement = () => setCount((prevCount) => prevCount + 1);
 
@@ -57,6 +61,7 @@ export const ProductProvider = ({ children }: ProductProviderType) => {
       try {
         const data = await fetchProductData();
         setProduct(data);
+        setLoading(false)
       } catch (error) {
         console.error(`Error fetching data: ${error}`);
       }
@@ -86,10 +91,20 @@ export const ProductProvider = ({ children }: ProductProviderType) => {
   });
 
   const addToCart = (product: ProductType, quantity: number) => {
+    if (!isSignedIn) {
+      // If the user is not signed in, open the sign-in modal
+      clerk.openSignIn();
+      return; // Prevent proceeding with adding to cart
+    }
+
     setCartItems((prevCart) => {
+      // Check current state of cartItems
+      console.log("Current Cart Items:", prevCart);
+
       const existingProductIndex = prevCart.findIndex(
         (item) => item._id === product._id
       );
+
       if (existingProductIndex !== -1) {
         const updatedCart = [...prevCart];
         updatedCart[existingProductIndex] = {
@@ -97,13 +112,16 @@ export const ProductProvider = ({ children }: ProductProviderType) => {
           quantity:
             (updatedCart[existingProductIndex].quantity || 0) + quantity,
         };
+        console.log("Updated Cart:", updatedCart); // Debugging: Check updated cart state
         return updatedCart;
       } else {
-        return [...prevCart, { ...product, quantity }];
+        const updatedCart = [...prevCart, { ...product, quantity }];
+        console.log("New Cart:", updatedCart); // Debugging: Check new cart state
+        return updatedCart;
       }
     });
     Swal.fire({
-      text: `${product.title} add to Cart!`,
+      text: `${product.title} added to Cart!`,
       icon: "success",
       position: "center",
       timer: 3000,
@@ -137,6 +155,11 @@ export const ProductProvider = ({ children }: ProductProviderType) => {
   };
 
   const handleAddToWishlist = (product: ProductType, quantity: number = 1) => {
+    if (!isSignedIn) {
+      // If the user is not signed in, open the sign-in modal
+      clerk.openSignIn();
+      return; // Prevent proceeding with adding to cart
+    }
     const currentWishlist: WishList[] = JSON.parse(
       localStorage.getItem("wishlist") || "[]"
     );
@@ -219,6 +242,7 @@ export const ProductProvider = ({ children }: ProductProviderType) => {
         handleClearSearchQuery,
         wishlist,
         handleRemoveFromWishlist,
+        loading
       }}
     >
       <div>{children}</div>
