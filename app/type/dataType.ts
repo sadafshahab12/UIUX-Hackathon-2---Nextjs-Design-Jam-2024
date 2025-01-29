@@ -79,10 +79,9 @@ export interface CategoryType {
   categorySlug: string; // Category URL slug
   imageUrls: string[]; // Images for the category
 }
-export interface FormData {
+export interface CustomerData {
   firstName: string;
   lastName: string;
-  companyName: string;
   country: string;
   streetAddress: string;
   city: string;
@@ -91,4 +90,28 @@ export interface FormData {
   phone: string;
   email: string;
   additionalInfo: string;
+  errors?: {
+    firstName?: string;
+    lastName?: string;
+    email?: string;
+    phone?: string;
+    streetAddress?: string;
+    city?: string;
+    zipCode?: string;
+    [key: string]: string | undefined;
+  };
+}
+
+export interface CustomerType {
+  firstName:string,
+    lastName:string,
+    country: string, // default country
+    streetAddress:string,
+    city: string,
+    province: string,
+    zipCode: string,
+    phone: string,
+    email: string,
+    additionalInfo:string,
+    
 }

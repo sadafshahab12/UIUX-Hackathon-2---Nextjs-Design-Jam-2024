@@ -9,7 +9,7 @@
     "lint": "next lint",
     "migrate": "node scripts/migrate.mjs",
     "cleanup": "node scripts/cleanup.mjs",
-    "cypress:open" : "cypress open"
+    "cypress:open": "cypress open"
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.22.7",
@@ -24,6 +24,7 @@
     "@sanity/client": "^6.27.1",
     "@sanity/image-url": "^1.1.0",
     "@sanity/vision": "^3.70.0",
+    "axios": "^1.7.9",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "dotenv": "^16.4.7",

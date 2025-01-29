@@ -8,17 +8,25 @@ import Properties from "../components/ui/Properties";
 import { ProductContext } from "../components/context/ProductContext";
 import { CountContext } from "../type/dataType";
 import Image from "next/image";
+import PlaceOrder from "../form-actions/PlaceOrder";
 
 const Checkout = () => {
   const { cartItems } = useContext(ProductContext) as CountContext;
+
   const total = cartItems.reduce(
-    (total, item) => total + item.price * item.quantity,
+    (total, item) => {
+      const discount = (item.price * item.dicountPercentage) / 100; // Calculate discount
+      const discountedPrice = item.price - discount; // Apply discount
+      return total + discountedPrice * item.quantity; // Multiply by quantity and add to total
+    },
     0
   );
-  const [formData, setFormData] = useState({
+  
+
+  // Form state
+  const [customerData, setCustomerData] = useState({
     firstName: "",
     lastName: "",
-    companyName: "",
     country: "Sri Lanka", // default country
     streetAddress: "",
     city: "",
@@ -28,55 +36,85 @@ const Checkout = () => {
     email: "",
     additionalInfo: "",
   });
-  const [errors, setErrors] = useState<string[]>([]);
+
+  // Error state for each field
+  const [errors, setErrors] = useState<any>({
+    firstName: "",
+    lastName: "",
+    email: "",
+    phone: "",
+    streetAddress: "",
+    city: "",
+    zipCode: "",
+  });
+
+  // Handle input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
-    setFormData((prevData) => ({
-      ...prevData,
-      [id]: value,
-    }));
+    setCustomerData({ ...customerData, [id]: value });
+    console.log("Field value:", value); // Log the field value
   };
 
   const handleCountryChange = (value: string) => {
-    setFormData((prevData) => ({
+    setCustomerData((prevData) => ({
       ...prevData,
       country: value,
     }));
   };
 
+  // Validate form fields
+  const validateForm = () => {
+    const newErrors: any = {};
+
+    // Required fields
+    if (!customerData.firstName)
+      newErrors.firstName = "First name is required.";
+    if (!customerData.lastName) newErrors.lastName = "Last name is required.";
+    if (!customerData.email) newErrors.email = "Email is required.";
+    if (!customerData.phone) newErrors.phone = "Phone number is required.";
+    if (!customerData.streetAddress)
+      newErrors.streetAddress = "Street address is required.";
+    if (!customerData.city) newErrors.city = "City is required.";
+    if (!customerData.zipCode) newErrors.zipCode = "Zip code is required.";
+
+    // Email format check
+    if (customerData.email && !/\S+@\S+\.\S+/.test(customerData.email)) {
+      newErrors.email = "Please enter a valid email address.";
+    }
+
+    // Phone number format (basic check)
+ 
+
+    return newErrors;
+  };
+
+  // Handle form submit
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    const newErrors: string[] = [];
-    if (!formData.firstName) newErrors.push("First Name is required");
-    if (!formData.lastName) newErrors.push("Last Name is required");
-    if (!formData.streetAddress) newErrors.push("Street Address is required");
-    if (!formData.city) newErrors.push("City is required");
-    if (!formData.province) newErrors.push("Province is required");
-    if (!formData.zipCode) newErrors.push("ZIP Code is required");
-    if (!formData.phone) newErrors.push("Phone is required");
-    if (!formData.email) newErrors.push("Email is required");
-
-    setErrors(newErrors);
-    if (newErrors.length === 0) {
-      // Simulate placing an order
-      console.log("Order placed successfully with data:", formData);
-      alert("Order placed successfully!");
-      // Reset form (optional)
-      setFormData({
-        firstName: "",
-        lastName: "",
-        companyName: "",
-        country: "Sri Lanka",
-        streetAddress: "",
-        city: "",
-        province: "",
-        zipCode: "",
-        phone: "",
-        email: "",
-        additionalInfo: "",
-      });
+    PlaceOrder(cartItems, customerData);
+    // Validate the form
+    const validationErrors = validateForm();
+    if (Object.keys(validationErrors).length > 0) {
+      setErrors(validationErrors);
+      return;
     }
+
+    // Reset form if no errors
+    setCustomerData({
+      firstName: "",
+      lastName: "",
+      country: "Sri Lanka",
+      streetAddress: "",
+      city: "",
+      province: "",
+      zipCode: "",
+      phone: "",
+      email: "",
+      additionalInfo: "",
+    });
+    setErrors({});
   };
+
   return (
     <>
       <div>
@@ -87,20 +125,24 @@ const Checkout = () => {
               Billing details
             </h1>
             <BillingForm
-              formData={formData}
+              customerData={customerData}
               handleInputChange={handleInputChange}
               handleCountryChange={handleCountryChange}
               handleSubmit={handleSubmit}
               errors={errors}
             />
           </div>
+
           <div className="product-details lg:p-20 md:p-10 p-5">
             <div className="lg:space-y-10 space-y-4">
               <div className="flex-between lg:text-24 text-20 font-semibold">
                 <h3>Product</h3>
                 <h3>Subtotal</h3>
               </div>
-              {cartItems.map((item, index) => (
+              {cartItems.map((item, index) => {
+                      const discount = (item.price * item.dicountPercentage) / 100;
+                      const discountedPrice = item.price - discount;
+                return(
                 <div key={index}>
                   <div className="flex-between">
                     <div className="flex-no-center gap-4">
@@ -119,15 +161,15 @@ const Checkout = () => {
                       </p>
                     </div>
                     <p className="lg:text-16 text-14 font-light">
-                      Rs. {item.price * item.quantity}
+                      Rs. {discountedPrice * item.quantity}
                     </p>
                   </div>
                 </div>
-              ))}
+              )})}
               <div className="flex-between">
                 <p className="lg:text-16 text-14">Subtotal</p>
                 <p className="flex-between lg:text-16 text-14 font-light">
-                  Rs. {total}
+                  Rs.  {total}
                 </p>
               </div>
               <div className="flex-between">
@@ -165,6 +207,7 @@ const Checkout = () => {
                   </label>
                 </div>
               </div>
+
               <div>
                 <p className="lg:text-16 text-14 font-light mb-3">
                   Your personal data will be used to support your experience
@@ -174,7 +217,8 @@ const Checkout = () => {
                 </p>
               </div>
               <div className="sm:text-center text-left flex-no-center gap-5">
-                <Button onClick={handleSubmit}
+                <Button
+                  onClick={handleSubmit}
                   variant="outline"
                   className="lg:px-14 px-12 rounded-lg border-black"
                 >

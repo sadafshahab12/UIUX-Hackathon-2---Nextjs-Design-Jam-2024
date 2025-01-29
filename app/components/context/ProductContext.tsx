@@ -101,7 +101,10 @@ export const ProductProvider = ({ children }: ProductProviderType) => {
       clerk.openSignIn();
       return; // Prevent proceeding with adding to cart
     }
-
+    if (product.isStock === false) {
+      alert("Out of Stock");
+      return;
+    }
     setCartItems((prevCart) => {
       // Check current state of cartItems
       console.log("Current Cart Items:", prevCart);
@@ -165,8 +168,10 @@ export const ProductProvider = ({ children }: ProductProviderType) => {
       clerk.openSignIn();
       return; // Prevent proceeding with adding to cart
     }
+    const userId = clerk.user?.id;
+
     const currentWishlist: WishList[] = JSON.parse(
-      localStorage.getItem("wishlist") || "[]"
+      localStorage.getItem(`wishlist-${userId}`) || "[]"
     );
 
     // Check if the product is already in the wishlist
@@ -183,8 +188,9 @@ export const ProductProvider = ({ children }: ProductProviderType) => {
     }
 
     // Store the updated wishlist in localStorage
-    localStorage.setItem("wishlist", JSON.stringify(currentWishlist));
+    localStorage.setItem(`wishlist-${userId}`, JSON.stringify(currentWishlist));
     setWishlist(currentWishlist); // Update the state to re-render the component
+
     Swal.fire({
       text: `${product.title} add to Wishlist!`,
       icon: "success",
@@ -197,15 +203,22 @@ export const ProductProvider = ({ children }: ProductProviderType) => {
   const [wishlist, setWishlist] = useState<WishList[]>([]);
 
   useEffect(() => {
-    const storedWishlist = JSON.parse(localStorage.getItem("wishlist") || "[]");
-    setWishlist(storedWishlist);
-  }, []);
+    const userId = clerk.user?.id;
+    if (userId) {
+      const storedWishlist = JSON.parse(
+        localStorage.getItem(`wishlist-${userId}`) || "[]"
+      );
+      setWishlist(storedWishlist);
+    }
+  }, [clerk.user?.id]);
 
   const handleRemoveFromWishlist = (productId: string) => {
+    const userId = clerk.user?.id;
+    if (!userId) return; // Ensure user is logged in
     // Remove from wishlist state
     const updatedWishlist = wishlist.filter((item) => item._id !== productId);
     // Update localStorage with the new wishlist
-    localStorage.setItem("wishlist", JSON.stringify(updatedWishlist));
+    localStorage.setItem(`wishlist-${userId}`, JSON.stringify(updatedWishlist));
     // Update the wishlist state
     Swal.fire({
       title: "Are You Sure?",
@@ -248,7 +261,7 @@ export const ProductProvider = ({ children }: ProductProviderType) => {
         wishlist,
         handleRemoveFromWishlist,
         loading,
-        error
+        error,
       }}
     >
       <div>{children}</div>
