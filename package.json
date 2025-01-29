@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "migrate": "node scripts/migrate.mjs",
-    "cleanup": "node scripts/cleanup.mjs"
+    "cleanup": "node scripts/cleanup.mjs",
+    "cypress:open" : "cypress open"
   },
   "dependencies": {
     "@clerk/clerk-react": "^5.22.7",
@@ -43,8 +44,10 @@
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "cypress": "^14.0.0",
     "eslint": "^8",
     "eslint-config-next": "15.0.4",
+    "jest": "^29.7.0",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"

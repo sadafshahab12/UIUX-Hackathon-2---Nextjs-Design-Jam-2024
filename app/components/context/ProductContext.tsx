@@ -21,6 +21,7 @@ export const ProductProvider = ({ children }: ProductProviderType) => {
   const { isSignedIn } = useUser();
   const clerk = useClerk();
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   const countIncrement = () => setCount((prevCount) => prevCount + 1);
 
@@ -62,6 +63,9 @@ export const ProductProvider = ({ children }: ProductProviderType) => {
         const data = await fetchProductData();
         setProduct(data);
       } catch (error) {
+        setError(
+          "We're really sorry, but we couldn't find the product you were looking for."
+        );
         console.error(`Error fetching data: ${error}`);
       } finally {
         setLoading(false);
@@ -244,6 +248,7 @@ export const ProductProvider = ({ children }: ProductProviderType) => {
         wishlist,
         handleRemoveFromWishlist,
         loading,
+        error
       }}
     >
       <div>{children}</div>

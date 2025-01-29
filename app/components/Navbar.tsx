@@ -1,16 +1,17 @@
 "use client";
-import Image from "next/image";
+import { AiOutlineShoppingCart } from "react-icons/ai";
 import { BiSolidDashboard } from "react-icons/bi";
 import React, { useContext, useState } from "react";
 import { montserrat, poppins } from "../fonts/font";
 import Link from "next/link";
 import Logo from "./ui/Logo";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faBars } from "@fortawesome/free-solid-svg-icons";
+
 import { ProductContext } from "./context/ProductContext";
 import { CountContext } from "../type/dataType";
 import { UserButton, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
+import { CiHeart } from "react-icons/ci";
+import { HiOutlineMenuAlt2 } from "react-icons/hi";
 
 const Navbar = () => {
   const { cartItems, wishlist } = useContext(ProductContext) as CountContext;
@@ -26,19 +27,13 @@ const Navbar = () => {
   return (
     <>
       <header className="fixed top-0 z-50 bg-white w-full">
-        <nav className="flex justify-between md:px-10 px-8 py-3">
-          <div className="menu-bar cursor-pointer flex items-center gap-4">
-            <FontAwesomeIcon
-              icon={faBars}
-              width={25}
-              height={25}
-              className="md:hidden block"
-              onClick={toggleMenu}
-            />
+        <nav className="flex justify-between md:px-10 xs:px-8 px-4 py-3">
+          <div className="menu-bar cursor-pointer flex items-center sm:gap-4 gap-2">
+            <HiOutlineMenuAlt2 onClick={toggleMenu} className="h-5 w-5 md:hidden block" />
             <div className="logo flex items-center md:gap-3 gap-1">
               <Logo />
               <h1
-                className={`${montserrat.className} md:text-[34px] xs:text-[30px] text-[25px] font-bold`}
+                className={`${montserrat.className} md:text-[34px] sm:text-[30px] xs:text-[25px] xss:text-20 font-bold`}
               >
                 Furniro
               </h1>
@@ -72,7 +67,7 @@ const Navbar = () => {
           {/* mobile nav  */}
           <ul
             style={{ left }}
-            className={`${poppins.className} md:hidden block w-full text-center h-screen space-y-8 py-5 px-10 absolute top-14 left-0 bg-white transition-all duration-300 ease-in z-50`}
+            className={`${poppins.className} md:hidden block w-full text-center h-screen space-y-10 py-5 px-10 absolute top-14 left-0 bg-white transition-all duration-300 ease-in z-50`}
           >
             <li onClick={closeMenu}>
               <Link href="/" className="text-16 font-medium">
@@ -94,12 +89,25 @@ const Navbar = () => {
                 Contact
               </Link>
             </li>
+            <li>
+              <Link href="/user">
+                <UserButton>
+                  <UserButton.MenuItems>
+                    <UserButton.Action
+                      label="Dashboard"
+                      labelIcon={<BiSolidDashboard />}
+                      onClick={() => router.push("/user")}
+                    />
+                  </UserButton.MenuItems>
+                </UserButton>
+              </Link>{" "}
+            </li>
           </ul>
-          <div className="icons flex items-center lg:gap-5 gap-3">
+          <div className="icons flex items-center gap-5">
             {isLoaded &&
               (isSignedIn ? (
                 <>
-                  <div className="xs:block hidden lg:w-[28px] w-[20px] lg:h-[28px] h-[20px] cursor-pointer">
+                  <div className=" xss:block hidden lg:w-[28px] w-[20px] lg:h-[28px] h-[20px] cursor-pointer">
                     <Link href="/user">
                       <UserButton>
                         <UserButton.MenuItems>
@@ -113,15 +121,9 @@ const Navbar = () => {
                     </Link>
                   </div>
 
-                  <div className="xs:block hidden md:w-[28px] w-[20px] md:h-[28px] h-[20px] cursor-pointer relative">
+                  <div className=" md:w-[28px] w-[20px] md:h-[28px] h-[20px] cursor-pointer relative">
                     <Link href="/wishlist">
-                      <Image
-                        src="/nav-icon/akar-icons_heart.png"
-                        width={500}
-                        height={500}
-                        alt="nav-icon"
-                        className="w-full h-full object-cover"
-                      />
+                      <CiHeart className="sm:w-8 w-6 sm:h-8 h-6" />
                     </Link>
                     <p className="absolute -top-2 -right-2 bg-yellow-400 w-5 h- text-sm flex justify-center items-center rounded-full">
                       {wishlist.length}
@@ -129,13 +131,7 @@ const Navbar = () => {
                   </div>
                   <div className="md:w-[28px] w-[20px] md:h-[28px] h-[20px] cursor-pointer relative">
                     <Link href={"/cart"}>
-                      <Image
-                        src="/nav-icon/ant-design_shopping-cart-outlined.png"
-                        width={500}
-                        height={500}
-                        alt="nav-icon"
-                        className="w-full h-full object-cover"
-                      />
+                      <AiOutlineShoppingCart className="sm:w-8 w-6 sm:h-8 h-6" />
                     </Link>
                     <p className="absolute -top-2 -right-2 bg-yellow-400 w-5 h- text-sm flex justify-center items-center rounded-full">
                       {cartItems.length}

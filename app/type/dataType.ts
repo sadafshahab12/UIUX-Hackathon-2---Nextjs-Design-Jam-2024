@@ -32,6 +32,7 @@ export interface SlugType {
 
 // CountContext defines all the values and methods available in the context
 export interface CountContext {
+  error: string| null
   loading :boolean;
   searchQuery: string; // Search query for filtering products
   count: number; // Current count of selected product quantity

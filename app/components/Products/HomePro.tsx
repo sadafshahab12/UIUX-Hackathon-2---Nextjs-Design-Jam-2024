@@ -5,17 +5,18 @@ import { useContext } from "react";
 import CardHover from "../ui/CardHover";
 import { ProductContext } from "../context/ProductContext";
 import Loading from "./Loading";
+import Errpage from "@/app/single-product/errpage";
 
 const HomeProducts = () => {
-  const { product, loading } = useContext(ProductContext) as CountContext;
+  const { product, loading, error } = useContext(ProductContext) as CountContext;
 
   if (loading) {
-    return (
-      
-        <Loading />
-    
-    );
+    return <Loading />;
   }
+  if (error) {
+    return <Errpage error={error} />;
+  }
+
   return (
     <>
       {product.slice(0, 8).map((furniture: ProductType, index: number) => {

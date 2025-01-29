@@ -162,6 +162,7 @@ const SingleProduct = () => {
                           width={500}
                           height={500}
                           className="w-full h-full object-contain sm:rounded-[8px] rounded-[6px]"
+                           loading="lazy"
                         />
                       </div>
                     ))}
@@ -175,6 +176,8 @@ const SingleProduct = () => {
                       height={500}
                       alt="img"
                       className="w-full h-full object-cover rounded-[8px]"
+                      loading="lazy"
+            
                     />
                   </div>
                 </div>
