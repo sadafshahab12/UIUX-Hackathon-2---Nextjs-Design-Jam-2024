@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import Properties from "../components/ui/Properties";
 import { useRouter } from "next/navigation";
 import { ProductContext } from "../components/context/ProductContext";
-import { CountContext, ProductType } from "../type/dataType";
+import { CountContext } from "../type/dataType";
 import { IoMdTrash } from "react-icons/io";
 
 const Cart = () => {

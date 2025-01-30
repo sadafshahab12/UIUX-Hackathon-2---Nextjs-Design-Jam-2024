@@ -6,25 +6,21 @@ import { Button } from "@/components/ui/button";
 import BillingForm from "../components/ui/BillingForm";
 import Properties from "../components/ui/Properties";
 import { ProductContext } from "../components/context/ProductContext";
-import { CountContext } from "../type/dataType";
+import { CountContext, CustomerType } from "../type/dataType";
 import Image from "next/image";
 import PlaceOrder from "../form-actions/PlaceOrder";
 
 const Checkout = () => {
   const { cartItems } = useContext(ProductContext) as CountContext;
 
-  const total = cartItems.reduce(
-    (total, item) => {
-      const discount = (item.price * item.dicountPercentage) / 100; // Calculate discount
-      const discountedPrice = item.price - discount; // Apply discount
-      return total + discountedPrice * item.quantity; // Multiply by quantity and add to total
-    },
-    0
-  );
-  
+  const total = cartItems.reduce((total, item) => {
+    const discount = (item.price * item.dicountPercentage) / 100; // Calculate discount
+    const discountedPrice = item.price - discount; // Apply discount
+    return total + discountedPrice * item.quantity; // Multiply by quantity and add to total
+  }, 0);
 
   // Form state
-  const [customerData, setCustomerData] = useState({
+  const [customerData, setCustomerData] = useState<CustomerType>({
     firstName: "",
     lastName: "",
     country: "Sri Lanka", // default country
@@ -38,7 +34,7 @@ const Checkout = () => {
   });
 
   // Error state for each field
-  const [errors, setErrors] = useState<any>({
+  const [errors, setErrors] = useState<{ [key: string]: string }>({
     firstName: "",
     lastName: "",
     email: "",
@@ -64,7 +60,7 @@ const Checkout = () => {
 
   // Validate form fields
   const validateForm = () => {
-    const newErrors: any = {};
+    const newErrors: {[key: string]: string} = {};
 
     // Required fields
     if (!customerData.firstName)
@@ -83,7 +79,6 @@ const Checkout = () => {
     }
 
     // Phone number format (basic check)
- 
 
     return newErrors;
   };
@@ -91,13 +86,17 @@ const Checkout = () => {
   // Handle form submit
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    PlaceOrder(cartItems, customerData);
+
     // Validate the form
     const validationErrors = validateForm();
+    setErrors(validationErrors);
+
     if (Object.keys(validationErrors).length > 0) {
-      setErrors(validationErrors);
-      return;
+      return; // Stop submission if there are errors
     }
+
+    // Proceed with placing the order
+    PlaceOrder(cartItems, customerData);
 
     // Reset form if no errors
     setCustomerData({
@@ -140,36 +139,37 @@ const Checkout = () => {
                 <h3>Subtotal</h3>
               </div>
               {cartItems.map((item, index) => {
-                      const discount = (item.price * item.dicountPercentage) / 100;
-                      const discountedPrice = item.price - discount;
-                return(
-                <div key={index}>
-                  <div className="flex-between">
-                    <div className="flex-no-center gap-4">
-                      <div className="w-[6rem] h-[6rem] rounded-md">
-                        <Image
-                          src={item.imageUrls[0]}
-                          alt={item.slug.current}
-                          width={500}
-                          height={500}
-                          className="w-full h-full object-cover rounded-md"
-                        />
+                const discount = (item.price * item.dicountPercentage) / 100;
+                const discountedPrice = item.price - discount;
+                return (
+                  <div key={index}>
+                    <div className="flex-between">
+                      <div className="flex-no-center gap-4">
+                        <div className="w-[6rem] h-[6rem] rounded-md">
+                          <Image
+                            src={item.imageUrls[0]}
+                            alt={item.slug.current}
+                            width={500}
+                            height={500}
+                            className="w-full h-full object-cover rounded-md"
+                          />
+                        </div>
+                        <p className="lg:text-16 text-14">
+                          <span className="text-[#9F9F9F]">{item.title}</span> x{" "}
+                          {item.quantity}
+                        </p>
                       </div>
-                      <p className="lg:text-16 text-14">
-                        <span className="text-[#9F9F9F]">{item.title}</span> x{" "}
-                        {item.quantity}
+                      <p className="lg:text-16 text-14 font-light">
+                        Rs. {discountedPrice * item.quantity}
                       </p>
                     </div>
-                    <p className="lg:text-16 text-14 font-light">
-                      Rs. {discountedPrice * item.quantity}
-                    </p>
                   </div>
-                </div>
-              )})}
+                );
+              })}
               <div className="flex-between">
                 <p className="lg:text-16 text-14">Subtotal</p>
                 <p className="flex-between lg:text-16 text-14 font-light">
-                  Rs.  {total}
+                  Rs. {total}
                 </p>
               </div>
               <div className="flex-between">
@@ -221,6 +221,7 @@ const Checkout = () => {
                   onClick={handleSubmit}
                   variant="outline"
                   className="lg:px-14 px-12 rounded-lg border-black"
+                  disabled={Object.keys(errors).length > 0}
                 >
                   Place order
                 </Button>
