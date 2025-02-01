@@ -23,7 +23,7 @@ const Navbar = () => {
   const closeMenu = () => {
     setLeft("-100%");
   };
-  const { isSignedIn, isLoaded, user } = useUser();
+  const { isSignedIn, isLoaded } = useUser();
   return (
     <>
       <header className="fixed top-0 z-50 bg-white w-full">
@@ -63,9 +63,6 @@ const Navbar = () => {
                 Contact
               </Link>
             </li>
-            {isLoaded && isSignedIn && user?.roles?.includes("admin") && (
-              <li><Link href="/admin">Admin</Link></li>
-            )}
           </ul>
           {/* mobile nav  */}
           <ul
@@ -92,9 +89,6 @@ const Navbar = () => {
                 Contact
               </Link>
             </li>
-            {isLoaded && isSignedIn && user?.roles?.includes('admin') && (
-              <li><Link href="/admin">Admin</Link></li>
-            )}
             <li>
               <Link href="/user">
                 <UserButton>
