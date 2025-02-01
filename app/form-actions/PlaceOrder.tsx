@@ -1,5 +1,15 @@
 import { ProductType, SanityCustomerType } from "../type/dataType";
-import { client } from "@/sanity/lib/client";
+import { createClient } from "next-sanity";
+import dotenv from "dotenv";
+dotenv.config();
+export const clientCreateDelete = createClient({
+  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
+  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET,
+  apiVersion: "2025-01-18",
+  useCdn: true, // Set to false if statically generating pages, using ISR or tag-based revalidation
+  token: process.env.NEXT_PUBLIC_SANITY_TOKEN,
+});
+
 const createCustomerInSanity = async (customerData: SanityCustomerType) => {
   try {
     const customerObject = {
@@ -16,7 +26,7 @@ const createCustomerInSanity = async (customerData: SanityCustomerType) => {
       additionalInfo: customerData.additionalInfo,
     };
 
-    const response = await client.create(customerObject);
+    const response = await clientCreateDelete.create(customerObject);
     console.log("customer created in sanity", response);
     return response;
   } catch (error) {
@@ -46,7 +56,7 @@ const createOrderInSanity = async (
       order_date: new Date().toISOString(),
     };
 
-    const response = await client.create(orderObject);
+    const response = await clientCreateDelete.create(orderObject);
     console.log("order created in sanity", response);
     return response;
   } catch (error) {
@@ -91,7 +101,7 @@ const createUserInSanity = async (userData: UserType) => {
       password: userData.password,
     };
 
-    const response = await client.create(userObject);
+    const response = await clientCreateDelete.create(userObject);
     console.log("customer created in sanity", response);
     return response;
   } catch (error) {

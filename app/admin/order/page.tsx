@@ -6,6 +6,7 @@ import { IoMdTrash } from "react-icons/io";
 import { OrderPageType } from "@/app/type/dataType";
 import Swal from "sweetalert2";
 import Image from "next/image";
+import { clientCreateDelete } from "@/app/form-actions/PlaceOrder";
 
 const OrderPage = () => {
   const [orders, setOrders] = useState<OrderPageType[]>([]);
@@ -70,12 +71,12 @@ const OrderPage = () => {
   
     try {
       // 🛒 Delete order first
-      await client.delete(orderId);
+      await clientCreateDelete.delete(orderId);
       console.log("Order deleted:", orderId);
   
       // 👤 Delete customer if they exist
       if (customerId) {
-        await client.delete(customerId);
+        await clientCreateDelete.delete(customerId);
         console.log("Customer deleted:", customerId);
       }
   
@@ -114,7 +115,7 @@ const OrderPage = () => {
           <h3 className="mt-3 font-semibold">Items:</h3>
           {order.items.map((item) => (
             <div key={item._id} className="border p-4 my-2 rounded-md flex gap-4">
-              <Image src={item.productImage} alt={item.productTitle} className="w-32 h-32 object-cover" />
+              <Image src={item.productImage} alt={item.productTitle} width={500} height={500} className="w-32 h-32 object-cover" />
               <div>
                 <h4 className="font-medium">{item.productTitle}</h4>
                 <p>Price: ${item.productPrice}</p>
