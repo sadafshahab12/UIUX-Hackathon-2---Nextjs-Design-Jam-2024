@@ -4,11 +4,10 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import React from "react";
+import clsx from "clsx";
 const Dashboard = () => {
   const { user } = useUser();
-const pathname = usePathname();
-
-const isActive = (link: string) => pathname === link
+  const pathname = usePathname();
 
   return (
     <aside className="">
@@ -41,7 +40,7 @@ const isActive = (link: string) => pathname === link
           </Link>
           <Link
             href="/user/settings"
-            className="{`py-3 px-4 bg-blue-400 hover:bg-blue-300 rounded-md transition-all ease-in duration-200 ${isActive('/user/settings') ? 'bg-blue-300' : 'bg-blue-400'}`}"
+            className={clsx("py-3 px-4 bg-blue-400 hover:bg-blue-300 rounded-md transition-all ease-in duration-200", {"bg-blue-900 text-white": pathname === "/user/settings"})}
           >
             Settings
           </Link>
