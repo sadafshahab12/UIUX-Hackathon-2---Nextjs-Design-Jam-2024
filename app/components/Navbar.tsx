@@ -33,7 +33,7 @@ const Navbar = () => {
             <div className="logo flex items-center md:gap-3 gap-1">
               <Logo />
               <h1
-                className={`${montserrat.className} md:text-[34px] sm:text-[30px] xs:text-[25px] xss:text-20 font-bold`}
+                className={` md:text-[34px] sm:text-[30px] xs:text-[25px] xss:text-20 font-bold`}
               >
                 Furniro
               </h1>
@@ -41,7 +41,7 @@ const Navbar = () => {
           </div>
 
           <ul
-            className={`${poppins.className} md:flex items-center hidden lg:gap-20 gap-10`}
+            className={` md:flex items-center hidden lg:gap-20 gap-10`}
           >
             <li>
               <Link href="/" className="text-16 font-medium">

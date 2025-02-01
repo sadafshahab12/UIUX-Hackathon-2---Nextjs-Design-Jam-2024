@@ -229,7 +229,7 @@ const Checkout = () => {
                   variant="outline"
                   className="lg:px-14 px-12 rounded-lg border-black"
                 >
-                  Place For Rent
+                  Make Payment
                 </Button>
               </div>
             </div>
