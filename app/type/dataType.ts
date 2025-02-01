@@ -32,8 +32,8 @@ export interface SlugType {
 
 // CountContext defines all the values and methods available in the context
 export interface CountContext {
-  error: string| null
-  loading :boolean;
+  error: string | null;
+  loading: boolean;
   searchQuery: string; // Search query for filtering products
   count: number; // Current count of selected product quantity
   countIncrement: () => void; // Function to increment count
@@ -48,7 +48,7 @@ export interface CountContext {
   handleAddToWishlist: (product: ProductType, quantity: number) => void; // Add product to wishlist with quantity
   wishlist: WishList[]; // List of wishlist items
   handleRemoveFromWishlist: (productId: string) => void; // Remove product from wishlist by ID
-  handleClearSearchQuery: ()=>void
+  handleClearSearchQuery: () => void;
 }
 
 // CartItem extends ProductType to add quantity for cart items
@@ -102,16 +102,53 @@ export interface CustomerData {
   };
 }
 
-export interface CustomerType {
-  firstName:string,
-    lastName:string,
-    country: string, // default country
-    streetAddress:string,
-    city: string,
-    province: string,
-    zipCode: string,
-    phone: string,
-    email: string,
-    additionalInfo:string,
-    
+export interface SanityCustomerType {
+  _id: string
+  firstName: string;
+  lastName: string;
+  country: string; // default country
+  streetAddress: string;
+  city: string;
+  province: string;
+  zipCode: string;
+  phone: string;
+  email: string;
+  additionalInfo: string;
+}
+
+
+// order page data type
+// Data type for Items in the order
+export interface OrderItemType {
+  _type: "items";
+  _id: string;
+  productTitle: string;
+  productPrice: number;
+  productQuantity: number;
+  productImage: string;
+}
+
+// Data type for the Customer
+export interface OrderPageCustomerType {
+  _id: string;
+  firstname: string;
+  lastname: string;
+  email: string;
+  phone: string;
+  streetAddress: string;
+  city: string;
+  zipCode: string;
+  country: string;
+  province: string;
+  additionalInfo: string;
+}
+
+// Data type for the Order
+export interface OrderPageType {
+  _id: string;
+  order_date: string;
+  _createdAt: string;
+  _updatedAt: string;
+  items: OrderItemType[];
+  customer: OrderPageCustomerType;
 }

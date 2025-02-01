@@ -2,7 +2,7 @@
 import { AiOutlineShoppingCart } from "react-icons/ai";
 import { BiSolidDashboard } from "react-icons/bi";
 import React, { useContext, useState } from "react";
-import { montserrat, poppins } from "../fonts/font";
+import { poppins } from "../fonts/font";
 import Link from "next/link";
 import Logo from "./ui/Logo";
 
@@ -23,7 +23,7 @@ const Navbar = () => {
   const closeMenu = () => {
     setLeft("-100%");
   };
-  const { isSignedIn, isLoaded } = useUser();
+  const { isSignedIn, isLoaded, user } = useUser();
   return (
     <>
       <header className="fixed top-0 z-50 bg-white w-full">
@@ -63,6 +63,9 @@ const Navbar = () => {
                 Contact
               </Link>
             </li>
+            {isLoaded && isSignedIn && user?.roles?.includes("admin") && (
+              <li><Link href="/admin">Admin</Link></li>
+            )}
           </ul>
           {/* mobile nav  */}
           <ul
@@ -89,6 +92,9 @@ const Navbar = () => {
                 Contact
               </Link>
             </li>
+            {isLoaded && isSignedIn && user?.roles?.includes('admin') && (
+              <li><Link href="/admin">Admin</Link></li>
+            )}
             <li>
               <Link href="/user">
                 <UserButton>

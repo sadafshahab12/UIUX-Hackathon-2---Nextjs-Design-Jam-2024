@@ -1,6 +1,6 @@
-import { CustomerType, ProductType } from "../type/dataType";
+import { ProductType, SanityCustomerType } from "../type/dataType";
 import { client } from "@/sanity/lib/client";
-const createCustomerInSanity = async (customerData: CustomerType) => {
+const createCustomerInSanity = async (customerData: SanityCustomerType) => {
   try {
     const customerObject = {
       _type: "customer",
@@ -56,7 +56,7 @@ const createOrderInSanity = async (
 };
 const PlaceOrder = async (
   cartData: ProductType[],
-  customerData: CustomerType
+  customerData: SanityCustomerType
 ) => {
   //create customer
   try {
@@ -73,3 +73,43 @@ const PlaceOrder = async (
 };
 
 export default PlaceOrder;
+
+interface UserType {
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string; // Store hashed password
+}
+
+const createUserInSanity = async (userData: UserType) => {
+  try {
+    const userObject = {
+      _type: "user",
+      firstname: userData.firstName,
+      lastname: userData.lastName,
+      email: userData.email,
+      password: userData.password,
+    };
+
+    const response = await client.create(userObject);
+    console.log("customer created in sanity", response);
+    return response;
+  } catch (error) {
+    console.log("error created user in sanity", error);
+    throw error;
+  }
+};
+export const PlaceUserData = async (userData: UserType) => {
+  //create customer
+  try {
+    await createUserInSanity(userData);
+
+    console.log("place order complete");
+  } catch (error) {
+    console.log("error created customer and order in sanity", error);
+    throw error;
+  }
+  //create order
+
+  return false;
+};

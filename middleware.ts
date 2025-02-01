@@ -1,10 +1,21 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
-const isProtectedRoute = createRouteMatcher([
-"/cart(.*)"
-]);
+const isAdminRoute = createRouteMatcher(["/admin(.*)"]);
+const isUserRoute = createRouteMatcher(["/user(.*)"]);
+const isProtectedRoute = createRouteMatcher(["/cart(.*)"]);
 export default clerkMiddleware(async (auth, req) => {
-  if (isProtectedRoute(req)) await auth.protect(); //agr is route pr request ai h jo k protected route agr h to kia kro auth.protect() ka use krty huye sign in k page pr redirect krdo
+  const { user } = auth;
+  if (isAdminRoute(req)) {
+    if (!user || !user.roles.includes("admin")) {
+      return new Response("Not Authorize", { status: 403 });
+    }
+  }
+  if (isUserRoute(req) && !user) {
+    return new Response("Please sign in", { status: 401 });
+  }
+  
+
+  if (isProtectedRoute(req) && isAdminRoute(req)) await auth.protect(); //agr is route pr request ai h jo k protected route agr h to kia kro auth.protect() ka use krty huye sign in k page pr redirect krdo
 });
 
 export const config = {

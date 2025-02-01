@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import BillingForm from "../components/ui/BillingForm";
 import Properties from "../components/ui/Properties";
 import { ProductContext } from "../components/context/ProductContext";
-import { CountContext, CustomerType } from "../type/dataType";
+import { CountContext, SanityCustomerType } from "../type/dataType";
 import Image from "next/image";
 import PlaceOrder from "../form-actions/PlaceOrder";
 
@@ -20,7 +20,8 @@ const Checkout = () => {
   }, 0);
 
   // Form state
-  const [customerData, setCustomerData] = useState<CustomerType>({
+  const [customerData, setCustomerData] = useState<SanityCustomerType>({
+    _id: "",
     firstName: "",
     lastName: "",
     country: "Sri Lanka", // default country
@@ -100,6 +101,7 @@ const Checkout = () => {
 
     // Reset form if no errors
     setCustomerData({
+      _id: "",
       firstName: "",
       lastName: "",
       country: "Sri Lanka",
@@ -221,7 +223,7 @@ const Checkout = () => {
                   onClick={handleSubmit}
                   variant="outline"
                   className="lg:px-14 px-12 rounded-lg border-black"
-                  disabled={Object.keys(errors).length > 0}
+              
                 >
                   Place order
                 </Button>
