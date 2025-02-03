@@ -253,28 +253,28 @@ const SingleProduct = () => {
                 <div className="border-b border-gray-400 lg:py-5 py-3"></div>
                 <div className="text-16 text-gray grid grid-cols-[1fr_1fr_5fr] mt-5">
                   <div className="lg:space-y-4 space-y-2 lg:text-16 text-14 grid">
-                    <p>SKU</p>
-                    <p>Tags</p>
-                    <p>Category</p>
-                    <p>Share</p>
+                    <li>SKU</li>
+                    <li>Tags</li>
+                    <li>Category</li>
+                    <li>Share</li>
                   </div>
                   <div className="lg:space-y-4 space-y-2 justify-items-center">
-                    <p>:</p>
-                    <p>:</p>
-                    <p>:</p>
-                    <p>:</p>
+                    <li>:</li>
+                    <li>:</li>
+                    <li>:</li>
+                    <li>:</li>
                   </div>
                   <div className="lg:space-y-4 space-y-3 lg:text-16 text-14">
-                    <p>SS001</p>
-                    <p>{titleCase}</p>
+                    <li>SS001</li>
+                    <li>{titleCase}</li>
                     <div className="flex-no-center gap-2">
                       {singleFurniture.tags
                         .slice(1)
                         .map((tag: string, index: number) => (
-                          <p key={index}>
+                          <li key={index}>
                             {titleCaseArray(tag)}
                             {index < singleFurniture.tags.length - 2 && ","}
-                          </p>
+                          </li>
                         ))}
                     </div>
                     <SocialIcons />

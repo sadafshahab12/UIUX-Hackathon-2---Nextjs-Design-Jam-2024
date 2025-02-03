@@ -121,9 +121,9 @@ export default function Home() {
                 />
               </div>
               <div className="dots lg:flex-no-center flex-center gap-4 py-4">
-                <p className="border border-[#B88E2F] p-1  rounded-full cursor-pointer">
+                <div className="border border-[#B88E2F] p-1  rounded-full cursor-pointer">
                   <p className="bg-[#B88E2F]  h-[10px] w-[10px]  rounded-full"></p>
-                </p>
+                </div>
                 <p className="bg-[#D8D8D8]  h-[10px] w-[10px]  rounded-full cursor-pointer"></p>
                 <p className="bg-[#D8D8D8]  h-[10px] w-[10px]  rounded-full cursor-pointer"></p>
                 <p className="bg-[#D8D8D8]  h-[10px] w-[10px]  rounded-full cursor-pointer"></p>

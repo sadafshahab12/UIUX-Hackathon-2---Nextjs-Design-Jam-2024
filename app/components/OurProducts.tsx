@@ -14,7 +14,7 @@ const OurProducts = () => {
           </h1>
         </div>
 
-        <div className="RP-card grid lg:grid-cols-4 xs:grid-cols-2 grid-cols-1 sm:justify-items-center lg:gap-x-32 gap-5  ">
+        <div className="RP-card grid lg:grid-cols-4 xs:grid-cols-2 grid-cols-1 justify-items-center lg:gap-x-32 gap-5  ">
           <HomeProducts />
         </div>
         <div className="button text-center my-10">

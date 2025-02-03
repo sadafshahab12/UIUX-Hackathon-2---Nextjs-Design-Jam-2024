@@ -2,9 +2,7 @@
 import { useEffect, useState } from "react";
 import { client } from "@/sanity/lib/client";
 import { groq } from "next-sanity";
-import { IoMdTrash } from "react-icons/io";
 import { OrderPageType } from "@/app/type/dataType";
-import Swal from "sweetalert2";
 import Image from "next/image";
 
 const OrderPage = () => {
