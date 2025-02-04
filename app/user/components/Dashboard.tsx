@@ -14,7 +14,7 @@ const Dashboard = () => {
 
   return (
     <aside className="">
-      <nav className="flex flex-col gap-2 bg-yellow-800 h-full w-[20rem] ">
+      <nav className="flex flex-col gap-2 bg-slate-300 h-full w-[20rem] ">
         <div className="text-center flex flex-col justify-center items-center p-5 gap-3">
           <p className="text-sm ">
             Hi! <span className="font-bold ">{user?.fullName}</span>

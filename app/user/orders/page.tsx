@@ -115,7 +115,12 @@ const OrderPage = () => {
                     <td className="px-4 py-2 border font-bold text-green-600">
                       ${totalPrice.toFixed(2)}
                     </td>
-                    <td className="px-4 py-2 border">{order.status}</td>
+                    <td
+                      className={`px-4 py-2 border ${order.status === "pending" ? "text-[#FACC15] font-bold" : order.status === "completed" ? "text-[#22C55E] font-bold" : order.status === "dispatch" ? "text-[#3B82F6] font-bold" : order.status === "delivered" ? "text-[#14B8A6] font-bold" : "text-[#EF4444] font-bold"}`}
+                    >
+                      {order.status.charAt(0).toUpperCase() +
+                        order.status.slice(1).toLowerCase()}
+                    </td>
                   </tr>
                 );
               })}

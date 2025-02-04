@@ -1,7 +1,12 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 
 const isProtectedRoute = createRouteMatcher([
-"/cart(.*)"
+  "/cart(.*)",
+  "/checkout(.*)",
+  "/user(.*)",
+  "/user/orders(.*)",
+  "/user/user-wishlist(.*)",
+  "/user/payment(.*)",
 ]);
 export default clerkMiddleware(async (auth, req) => {
   if (isProtectedRoute(req)) await auth.protect(); //agr is route pr request ai h jo k protected route agr h to kia kro auth.protect() ka use krty huye sign in k page pr redirect krdo
