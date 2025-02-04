@@ -1,7 +1,9 @@
 import { ProductType, SanityCustomerType } from "../type/dataType";
 import { createClient } from "next-sanity";
 import dotenv from "dotenv";
+
 dotenv.config();
+
 export const clientCreateDelete = createClient({
   projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
   dataset: process.env.NEXT_PUBLIC_SANITY_DATASET,
@@ -10,12 +12,17 @@ export const clientCreateDelete = createClient({
   token: process.env.NEXT_PUBLIC_SANITY_TOKEN,
 });
 
+/**
+ * Creates a customer document in Sanity.
+ * @param {SanityCustomerType} customerData - Customer details.
+ * @returns {Promise<any>} - The created customer object.
+ */
 const createCustomerInSanity = async (customerData: SanityCustomerType) => {
   try {
     const customerObject = {
       _type: "customer",
-      firstname: customerData.firstName,
-      lastname: customerData.lastName,
+      firstName: customerData.firstName,
+      lastName: customerData.lastName,
       email: customerData.email,
       phone: customerData.phone,
       streetAddress: customerData.streetAddress,
@@ -27,99 +34,87 @@ const createCustomerInSanity = async (customerData: SanityCustomerType) => {
     };
 
     const response = await clientCreateDelete.create(customerObject);
-    console.log("customer created in sanity", response);
+    console.log("Customer created in Sanity:", response);
     return response;
   } catch (error) {
-    console.log("error created user in sanity", error);
+    console.error("Error creating customer in Sanity:", error);
     throw error;
   }
 };
+
+/**
+ * Creates an order document in Sanity.
+ * @param {ProductType[]} cartData - List of products in the order.
+ * @param {string} customerId - Reference to the customer document.
+ * @param {SanityCustomerType} customerData - Customer details for the order.
+ * @returns {Promise<any>} - The created order object.
+ */
 const createOrderInSanity = async (
   cartData: ProductType[],
-  customerId: string
+  customerId: string,
+  customerData: SanityCustomerType
 ) => {
   try {
     const orderObject = {
       _type: "order",
       customer: {
         _type: "reference",
-        _ref: customerId,
+        _ref: customerId, // Linking the order to the customer
       },
-      items: cartData.map((item: ProductType) => ({
-        _type: "items",
-        _id: item._id,
-        productTitle: item.title,
-        productPrice: item.price - (item.price * item.dicountPercentage) / 100,
-        productQuantity: item.quantity,
-        productImage: item.imageUrls[0],
+      firstName: customerData.firstName,
+      lastName: customerData.lastName,
+      email: customerData.email,
+      phone: customerData.phone,
+      streetAddress: customerData.streetAddress,
+      city: customerData.city,
+      zipCode: customerData.zipCode,
+      country: customerData.country,
+      province: customerData.province,
+      additionalInfo: customerData.additionalInfo,
+      cartItems: cartData.map((item: ProductType) => ({
+        _type: "reference",
+        _ref: item._id, // Reference to furniture schema
       })),
-      order_date: new Date().toISOString(),
+      totalPrice: cartData.reduce(
+        (total, item) =>
+          total +
+          (item.price - (item.price * (item.dicountPercentage || 0)) / 100) *
+            (item.quantity ?? 1), // Use default value 1 if undefined
+        0
+      ),
+      status: "pending", // Default status when order is created
     };
 
     const response = await clientCreateDelete.create(orderObject);
-    console.log("order created in sanity", response);
+    console.log("Order created in Sanity:", response);
     return response;
   } catch (error) {
-    console.log("error created order in sanity", error);
+    console.error("Error creating order in Sanity:", error);
     throw error;
   }
 };
+
+/**
+ * Places an order by creating a customer and an order in Sanity.
+ * @param {ProductType[]} cartData - List of products in the cart.
+ * @param {SanityCustomerType} customerData - Customer details.
+ */
 const PlaceOrder = async (
   cartData: ProductType[],
   customerData: SanityCustomerType
 ) => {
-  //create customer
   try {
+    // Step 1: Create Customer in Sanity
     const customer = await createCustomerInSanity(customerData);
-    await createOrderInSanity(cartData, customer._id);
-    console.log("place order complete");
+
+    // Step 2: Create Order in Sanity with reference to the customer
+    await createOrderInSanity(cartData, customer._id, customerData);
+
+    console.log("Place order complete!");
   } catch (error) {
-    console.log("error created customer and order in sanity", error);
+    console.error("Error creating customer and order in Sanity:", error);
     throw error;
   }
-  //create order
-
-  return false;
 };
 
 export default PlaceOrder;
-
-interface UserType {
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string; // Store hashed password
-}
-
-const createUserInSanity = async (userData: UserType) => {
-  try {
-    const userObject = {
-      _type: "user",
-      firstname: userData.firstName,
-      lastname: userData.lastName,
-      email: userData.email,
-      password: userData.password,
-    };
-
-    const response = await clientCreateDelete.create(userObject);
-    console.log("customer created in sanity", response);
-    return response;
-  } catch (error) {
-    console.log("error created user in sanity", error);
-    throw error;
-  }
-};
-export const PlaceUserData = async (userData: UserType) => {
-  //create customer
-  try {
-    await createUserInSanity(userData);
-
-    console.log("place order complete");
-  } catch (error) {
-    console.log("error created customer and order in sanity", error);
-    throw error;
-  }
-  //create order
-
-  return false;
-};

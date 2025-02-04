@@ -9,9 +9,10 @@ import { ProductContext } from "../components/context/ProductContext";
 import { CountContext, SanityCustomerType } from "../type/dataType";
 import Image from "next/image";
 import PlaceOrder from "../form-actions/PlaceOrder";
+import Swal from "sweetalert2";
 
 const Checkout = () => {
-  const { cartItems } = useContext(ProductContext) as CountContext;
+  const { cartItems, setCartItems } = useContext(ProductContext) as CountContext;
 
   const total = cartItems.reduce((total, item) => {
     const discount = (item.price * item.dicountPercentage) / 100; // Calculate discount
@@ -61,7 +62,7 @@ const Checkout = () => {
 
   // Validate form fields
   const validateForm = () => {
-    const newErrors: {[key: string]: string} = {};
+    const newErrors: { [key: string]: string } = {};
 
     // Required fields
     if (!customerData.firstName)
@@ -98,7 +99,12 @@ const Checkout = () => {
 
     // Proceed with placing the order
     PlaceOrder(cartItems, customerData);
-
+    Swal.fire({
+      title: "Order Placed!",
+      text: "Your order has been placed successfully.",
+      icon: "success",
+      confirmButtonText: "OK",
+    });
     // Reset form if no errors
     setCustomerData({
       _id: "",
@@ -114,6 +120,7 @@ const Checkout = () => {
       additionalInfo: "",
     });
     setErrors({});
+    setCartItems([])
   };
 
   return (
@@ -223,7 +230,6 @@ const Checkout = () => {
                   onClick={handleSubmit}
                   variant="outline"
                   className="lg:px-14 px-12 rounded-lg border-black"
-              
                 >
                   Place order
                 </Button>

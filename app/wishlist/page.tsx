@@ -72,10 +72,10 @@ const WishList = () => {
                   <h1 className="text-gray lg:text-16 sm:text-14 text-12">
                     {item.title}
                   </h1>
-                  <p className="lg:text-16 sm:text-14 text-12">{item.price}</p>
+                  <p className="lg:text-16 sm:text-14 text-12">${item.price}</p>
                   <p className="pl-5">{item.quantity}</p>
                   <p className="lg:text-16 sm:text-14 text-12">
-                    {item.price * item.quantity}
+                    ${item.price * item.quantity}
                   </p>
                   <div className="justify-self-center">
                     <IoMdTrash
@@ -95,12 +95,12 @@ const WishList = () => {
           <div className="space-y-6">
             <div className="flex justify-between">
               <p className="lg:text-16 text-14 font-medium">Subtotal</p>
-              <p className="lg:text-16 text-14 text-gray">Rs. {totalAmount}</p>
+              <p className="lg:text-16 text-14 text-gray">${totalAmount}</p>
             </div>
             <div className="flex justify-between">
               <p className="lg:text-16 text-14 font-medium">Total</p>
               <p className="lg:text-20 text-18 font-medium text-[#B88E2F]">
-                Rs. {totalAmount}
+                ${totalAmount}
               </p>
             </div>
           </div>

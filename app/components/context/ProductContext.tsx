@@ -254,6 +254,7 @@ export const ProductProvider = ({ children }: ProductProviderType) => {
         handleSearchChange,
         handleCategoryChange,
         cartItems,
+        setCartItems,
         removeFromCart,
         addToCart,
         handleAddToWishlist,

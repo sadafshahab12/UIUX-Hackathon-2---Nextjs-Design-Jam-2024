@@ -49,6 +49,7 @@ export interface CountContext {
   wishlist: WishList[]; // List of wishlist items
   handleRemoveFromWishlist: (productId: string) => void; // Remove product from wishlist by ID
   handleClearSearchQuery: () => void;
+  setCartItems: (items: CartItem[]) => void;
 }
 
 // CartItem extends ProductType to add quantity for cart items
@@ -103,7 +104,7 @@ export interface CustomerData {
 }
 
 export interface SanityCustomerType {
-  _id: string
+  _id: string;
   firstName: string;
   lastName: string;
   country: string; // default country
@@ -116,17 +117,9 @@ export interface SanityCustomerType {
   additionalInfo: string;
 }
 
-
 // order page data type
 // Data type for Items in the order
-export interface OrderItemType {
-  _type: "items";
-  _id: string;
-  productTitle: string;
-  productPrice: number;
-  productQuantity: number;
-  productImage: string;
-}
+
 
 // Data type for the Customer
 export interface OrderPageCustomerType {
@@ -149,6 +142,7 @@ export interface OrderPageType {
   order_date: string;
   _createdAt: string;
   _updatedAt: string;
-  items: OrderItemType[];
+  cartItems:ProductType[];
   customer: OrderPageCustomerType;
+  status : string;
 }

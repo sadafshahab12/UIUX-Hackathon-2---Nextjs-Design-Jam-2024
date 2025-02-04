@@ -7,7 +7,7 @@ export default function UserLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="flex h-screen mt-20">
+    <div className="grid grid-cols-[20rem_2fr]  mt-20">
       <Dashboard />
       <main>{children}</main>
     </div>

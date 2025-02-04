@@ -94,13 +94,13 @@ const Cart = () => {
                       {item.title}
                     </h1>
                     <p className="md:text-16 sm:text-14 xs:text-12 text-10">
-                      {discountedPrice}
+                      ${discountedPrice}
                     </p>
                     <p className="pl-5 md:text-16 sm:text-14 xs:text-12 text-10 ">
                       {item.quantity}
                     </p>
                     <p className="md:text-16 sm:text-14 xs:text-12 text-10">
-                      {discountedPrice * item.quantity}
+                      ${discountedPrice * item.quantity}
                     </p>
                     <div className="justify-self-center">
                       <IoMdTrash
@@ -121,12 +121,12 @@ const Cart = () => {
           <div className="space-y-6">
             <div className="flex justify-between">
               <p className="lg:text-16 text-14 font-medium">Subtotal</p>
-              <p className="lg:text-16 text-14 text-gray">Rs. {totalAmount}</p>
+              <p className="lg:text-16 text-14 text-gray">${totalAmount}</p>
             </div>
             <div className="flex justify-between">
               <p className="lg:text-16 text-14 font-medium">Total</p>
               <p className="lg:text-20 text-18 font-medium text-[#B88E2F]">
-                Rs. {totalAmount}
+                ${totalAmount}
               </p>
             </div>
           </div>

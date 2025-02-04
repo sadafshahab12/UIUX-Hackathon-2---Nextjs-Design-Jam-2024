@@ -1,36 +1,83 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Furniro - E-Commerce Marketplace
 
-## Getting Started
+## Project Overview
+Furniro is a dynamic e-commerce marketplace designed to provide a seamless shopping experience. The website supports both e-commerce and rental commerce, allowing users to purchase or rent furniture for long-term and short-term needs.
 
-First, run the development server:
+## Features
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- **User Authentication**: Implemented using Clerk authentication for sign-in and sign-up.
+- **Product Management**: Fetches and displays product data from Sanity Headless CMS.
+- **Cart System**: Allows users to add, update, and remove items from the cart with a smooth UI experience.
+- **Search & Filtering**: Users can search for products and filter them by categories.
+- **Dynamic Routing**: Individual product detail pages load dynamically using Next.js.
+- **Testing & Optimization**: Performance and compatibility tested across multiple browsers and devices.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Technologies Used
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- **Frontend**: Next.js, React.js, TypeScript, Tailwind CSS
+- **Backend**: Sanity Headless CMS
+- **Authentication**: Clerk
+- **State Management**: useContext for managing product data
+- **Testing**: Cypress (in progress)
+- **Deployment**: Vercel
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Deployment Steps
 
-## Learn More
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/sadafshahab12/UIUX-Hackathon-2---Nextjs-Design-Jam-2024.git
+   ```
 
-To learn more about Next.js, take a look at the following resources:
+2. Navigate to the project directory:
+   ```sh
+   cd Furniro
+   ```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+3. Install dependencies:
+   ```sh
+   npm install
+   ```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+4. Set up environment variables:
+   - Configure API keys for Sanity and Clerk authentication.
 
-## Deploy on Vercel
+5. Start the development server:
+   ```sh
+   npm run dev
+   ```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+6. Deploy to Vercel:
+   ```sh
+   vercel
+   ```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Test Case Summary
+
+| Test Case ID | Description              | Expected Result             | Actual Result               | Status          |
+|-------------|--------------------------|-----------------------------|-----------------------------|-----------------|
+| TC001       | Product display validation | Products display correctly  | Products displayed successfully | ✅ Passed |
+| TC002       | Product search validation | Search results match query | Search works accurately | ✅ Passed |
+| TC003       | Cart functionality        | Add/update/remove items     | Works as expected          | ✅ Passed |
+| TC004       | Dynamic product pages     | Loads product details correctly | Product details displayed | ✅ Passed |
+| TC005       | API fetching              | Fetch data from Sanity      | Data fetched successfully  | ✅ Passed |
+| TC006       | API error handling        | Shows error message         | Handled gracefully         | ✅ Passed |
+| TC007       | Lighthouse performance test | Performance > 80           | Performance: 47 (Needs optimization) | ⚠️ Needs Improvement |
+| TC008       | Browser compatibility     | Renders correctly across browsers | Minor inconsistencies | ✅ Acceptable |
+| TC009       | Responsive testing        | Adapts to all devices       | Fully responsive           | ✅ Passed |
+
+## Challenges & Learnings
+
+- Faced issues with Next.js and TypeScript integration but resolved them through self-learning.
+- Encountered difficulties with payment integration and data management in Sanity.
+- Improved skills in debugging, state management, and dynamic routing.
+
+## Future Enhancements
+- Improve website performance and Lighthouse scores.
+- Implement Cypress for automated testing.
+- Enhance UI/UX for a more seamless shopping experience.
+
+## Contributing
+If you'd like to contribute, please fork the repository and submit a pull request with your changes.
+
+## Contact
+For any queries, reach out via [LinkedIn](https://www.linkedin.com/in/sadaf-shahab-ssr123/)
