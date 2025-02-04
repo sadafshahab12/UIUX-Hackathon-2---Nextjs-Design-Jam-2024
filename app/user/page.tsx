@@ -12,11 +12,12 @@ const DashboardPage = () => {
   const { wishlist } = useContext(ProductContext) as CountContext;
   const { user } = useUser();
 
-  // Wrap fetchOrders with useCallback
+  // Fetch orders only for the logged-in user
   const fetchOrders = useCallback(async () => {
     if (!user) return;
+
     const orderQuery = groq`
-      *[_type == "order"] | order(_createdAt desc) {
+      *[_type == "order" && customer._id == $userId] | order(_createdAt desc) {
         _id,
         order_date,
         _createdAt,
@@ -44,19 +45,20 @@ const DashboardPage = () => {
         }
       }
     `;
+
     try {
       const data = await client.fetch(orderQuery, { userId: user.id });
-      setOrders(data);
+      setOrders(data || []);
     } catch (error) {
       console.error("Error fetching orders:", error);
     }
-  }, [user]); // `useCallback` ensures fetchOrders is memoized and does not change on every render
+  }, [user]);
 
   useEffect(() => {
     if (user) {
       fetchOrders();
     }
-  }, [user, fetchOrders]); // Dependencies remain stable
+  }, [user, fetchOrders]);
 
   return (
     <div className="p-5">

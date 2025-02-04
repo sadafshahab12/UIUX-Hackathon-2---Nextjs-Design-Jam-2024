@@ -253,25 +253,25 @@ const SingleProduct = () => {
                 <div className="border-b border-gray-400 lg:py-5 py-3"></div>
                 <div className="text-16 text-gray grid grid-cols-[1fr_1fr_5fr] mt-5">
                   <div className="lg:space-y-4 space-y-2 lg:text-16 text-14 grid">
-                    <li>SKU</li>
-                    <li>Tags</li>
-                    <li>Category</li>
-                    <li>Share</li>
+                    <li className="list-none">SKU</li>
+                    <li className="list-none">Tags</li>
+                    <li className="list-none">Category</li>
+                    <li className="list-none">Share</li>
                   </div>
                   <div className="lg:space-y-4 space-y-2 justify-items-center">
-                    <li>:</li>
-                    <li>:</li>
-                    <li>:</li>
-                    <li>:</li>
+                    <li className="list-none">:</li>
+                    <li className="list-none">:</li>
+                    <li className="list-none">:</li>
+                    <li className="list-none">:</li>
                   </div>
                   <div className="lg:space-y-4 space-y-3 lg:text-16 text-14">
-                    <li>SS001</li>
-                    <li>{titleCase}</li>
+                    <li className="list-none">SS001</li>
+                    <li className="list-none">{titleCase}</li>
                     <div className="flex-no-center gap-2">
                       {singleFurniture.tags
                         .slice(1)
                         .map((tag: string, index: number) => (
-                          <li key={index}>
+                          <li key={index} className="list-none">
                             {titleCaseArray(tag)}
                             {index < singleFurniture.tags.length - 2 && ","}
                           </li>

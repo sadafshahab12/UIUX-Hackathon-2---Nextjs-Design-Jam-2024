@@ -104,6 +104,7 @@ export interface CustomerData {
 }
 
 export interface SanityCustomerType {
+  userId:string,
   _id: string;
   firstName: string;
   lastName: string;
@@ -145,4 +146,6 @@ export interface OrderPageType {
   cartItems:ProductType[];
   customer: OrderPageCustomerType;
   status : string;
+  totalPrice: number;
+  quantity: number;
 }

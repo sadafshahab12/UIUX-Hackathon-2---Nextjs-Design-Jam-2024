@@ -19,8 +19,14 @@ export const clientCreateDelete = createClient({
  */
 const createCustomerInSanity = async (customerData: SanityCustomerType) => {
   try {
+    console.log("Received customerData in Sanity:", customerData); // ✅ Debugging
+
+    if (!customerData.userId) {
+      console.warn("⚠️ Warning: userId is missing in customerData!");
+    }
     const customerObject = {
       _type: "customer",
+      userId: customerData.userId,
       firstName: customerData.firstName,
       lastName: customerData.lastName,
       email: customerData.email,
@@ -61,19 +67,12 @@ const createOrderInSanity = async (
         _type: "reference",
         _ref: customerId, // Linking the order to the customer
       },
-      firstName: customerData.firstName,
-      lastName: customerData.lastName,
-      email: customerData.email,
-      phone: customerData.phone,
-      streetAddress: customerData.streetAddress,
-      city: customerData.city,
-      zipCode: customerData.zipCode,
-      country: customerData.country,
-      province: customerData.province,
-      additionalInfo: customerData.additionalInfo,
+      userId: customerData.userId,
       cartItems: cartData.map((item: ProductType) => ({
         _type: "reference",
         _ref: item._id, // Reference to furniture schema
+        _key: item._id,
+        quantity: item.quantity, // Add quantity here
       })),
       totalPrice: cartData.reduce(
         (total, item) =>
@@ -93,6 +92,7 @@ const createOrderInSanity = async (
     throw error;
   }
 };
+
 
 /**
  * Places an order by creating a customer and an order in Sanity.

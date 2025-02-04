@@ -3,7 +3,6 @@ import { ProductContext } from "@/app/components/context/ProductContext";
 import { CountContext } from "@/app/type/dataType";
 import React, { useContext } from "react";
 import Image from "next/image";
-import { IoMdTrash } from "react-icons/io";
 
 const WishlistPage = () => {
   const { wishlist } = useContext(ProductContext) as CountContext;

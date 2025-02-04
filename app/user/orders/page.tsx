@@ -6,22 +6,41 @@ import Loading from "./loading";
 import { Input } from "@/components/ui/input";
 import { OrderPageType } from "@/app/type/dataType";
 import Image from "next/image";
+import { useUser } from "@clerk/nextjs";
 
 const OrderPage = () => {
+  const { user } = useUser(); // Get authenticated user from Clerk
   const [orders, setOrders] = useState<OrderPageType[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
 
   const fetchOrders = async () => {
-    const orderQuery = groq`*[_type == "order"]{
+    if (!user) return;
+
+    const orderQuery = groq`*[_type == "order" && customer->userId == $userId]{
       _id,
       status,
-      cartItems[]->{_id, title, price, discountPercentage, "imageUrls": productImage[].asset->url}, 
+      customer->{
+        _id,
+        firstName,
+        lastName,
+        email
+      },
+      cartItems[]->{
+        _id,
+        title,
+        price,
+        discountPercentage,
+        quantity,
+        "imageUrls": productImage[].asset->url
+      },
       _createdAt,
+      totalPrice
     }`;
 
     try {
-      const data = await client.fetch(orderQuery);
+      const data = await client.fetch(orderQuery, { userId: user.id });
+      console.log(data);
       setOrders(data || []);
     } catch (error) {
       console.error("Error fetching orders:", error);
@@ -31,8 +50,9 @@ const OrderPage = () => {
   };
 
   useEffect(() => {
+    console.log(user);
     fetchOrders();
-  }, []);
+  }, [user]);
 
   const filteredOrders = orders.filter((order) =>
     order.cartItems.some((item) =>
@@ -61,6 +81,7 @@ const OrderPage = () => {
             <thead>
               <tr className="bg-gray-200">
                 <th className="px-4 py-2 border">Products</th>
+                <th className="px-4 py-2 border">Quantity</th> {/* Added Quantity column */}
                 <th className="px-4 py-2 border">Created At</th>
                 <th className="px-4 py-2 border">Price</th>
                 <th className="px-4 py-2 border">Total</th>
@@ -69,13 +90,11 @@ const OrderPage = () => {
             </thead>
             <tbody>
               {filteredOrders.map((order) => {
-                // Calculate total price for the order
                 const totalPrice = order.cartItems.reduce((total, item) => {
                   const discount = item.dicountPercentage
                     ? (item.price * item.dicountPercentage) / 100
                     : 0;
-                  const discountedPrice = item.price - discount;
-                  return total + discountedPrice;
+                  return total + (item.price - discount) * item.quantity; // Adjust total price based on quantity
                 }, 0);
 
                 return (
@@ -95,6 +114,13 @@ const OrderPage = () => {
                       ))}
                     </td>
                     <td className="px-4 py-2 border">
+                      {order.cartItems.map((item) => (
+                        <div key={item._id}>
+                          <p className="font-semibold">{item.quantity}</p> {/* Display Quantity */}
+                        </div>
+                      ))}
+                    </td>
+                    <td className="px-4 py-2 border">
                       {new Date(order._createdAt).toLocaleDateString()}
                     </td>
                     <td className="px-4 py-2 border">
@@ -102,11 +128,10 @@ const OrderPage = () => {
                         const discount = item.dicountPercentage
                           ? (item.price * item.dicountPercentage) / 100
                           : 0;
-                        const discountedPrice = item.price - discount;
                         return (
                           <div key={item._id}>
                             <p className="font-semibold">
-                              ${discountedPrice.toFixed(2)}
+                              ${(item.price - discount).toFixed(2)}
                             </p>
                           </div>
                         );
@@ -116,7 +141,17 @@ const OrderPage = () => {
                       ${totalPrice.toFixed(2)}
                     </td>
                     <td
-                      className={`px-4 py-2 border ${order.status === "pending" ? "text-[#FACC15] font-bold" : order.status === "completed" ? "text-[#22C55E] font-bold" : order.status === "dispatch" ? "text-[#3B82F6] font-bold" : order.status === "delivered" ? "text-[#14B8A6] font-bold" : "text-[#EF4444] font-bold"}`}
+                      className={`px-4 py-2 border ${
+                        order.status === "pending"
+                          ? "text-[#FACC15] font-bold"
+                          : order.status === "completed"
+                          ? "text-[#22C55E] font-bold"
+                          : order.status === "dispatch"
+                          ? "text-[#3B82F6] font-bold"
+                          : order.status === "delivered"
+                          ? "text-[#14B8A6] font-bold"
+                          : "text-[#EF4444] font-bold"
+                      }`}
                     >
                       {order.status.charAt(0).toUpperCase() +
                         order.status.slice(1).toLowerCase()}

@@ -10,9 +10,12 @@ import { CountContext, SanityCustomerType } from "../type/dataType";
 import Image from "next/image";
 import PlaceOrder from "../form-actions/PlaceOrder";
 import Swal from "sweetalert2";
+import { useUser } from "@clerk/clerk-react";
 
 const Checkout = () => {
-  const { cartItems, setCartItems } = useContext(ProductContext) as CountContext;
+  const { cartItems, setCartItems } = useContext(
+    ProductContext
+  ) as CountContext;
 
   const total = cartItems.reduce((total, item) => {
     const discount = (item.price * item.dicountPercentage) / 100; // Calculate discount
@@ -22,6 +25,7 @@ const Checkout = () => {
 
   // Form state
   const [customerData, setCustomerData] = useState<SanityCustomerType>({
+    userId: "",
     _id: "",
     firstName: "",
     lastName: "",
@@ -86,9 +90,11 @@ const Checkout = () => {
   };
 
   // Handle form submit
-  const handleSubmit = (e: React.FormEvent) => {
+  const { user } = useUser(); // Get user from Clerk
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
+    const userId = user ? user.id : ""; // Get user ID (empty if not logged in)
+    console.log(userId);
     // Validate the form
     const validationErrors = validateForm();
     setErrors(validationErrors);
@@ -97,8 +103,11 @@ const Checkout = () => {
       return; // Stop submission if there are errors
     }
 
+    // Add user ID to customer data
+    const updatedCustomerData = { ...customerData, userId };
+
     // Proceed with placing the order
-    PlaceOrder(cartItems, customerData);
+    await PlaceOrder(cartItems, updatedCustomerData);
     Swal.fire({
       title: "Order Placed!",
       text: "Your order has been placed successfully.",
@@ -107,6 +116,7 @@ const Checkout = () => {
     });
     // Reset form if no errors
     setCustomerData({
+      userId: "",
       _id: "",
       firstName: "",
       lastName: "",
@@ -120,7 +130,7 @@ const Checkout = () => {
       additionalInfo: "",
     });
     setErrors({});
-    setCartItems([])
+    setCartItems([]);
   };
 
   return (
