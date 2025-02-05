@@ -36,27 +36,47 @@ const Dashboard = () => {
         <div className="flex flex-col gap-3 p-5">
           <Link
             href="/user"
-            className={clsx("py-3 px-4 bg-slate-800 text-white hover:bg-slate-600 rounded-md transition-all ease-in duration-200 flex items-center gap-3", {"border-2 p-1 border-white text-white": pathname === "/user"})}
+            className={clsx(
+              "py-3 px-4 bg-slate-800 text-white hover:bg-slate-600 rounded-md transition-all ease-in duration-200 flex items-center gap-3",
+              { "border-2 p-1 border-white text-white": pathname === "/user" }
+            )}
           >
             <RiDashboardFill /> Dashboard
           </Link>
           <Link
             href="/user/orders"
-            className={clsx("py-3 px-4 bg-slate-800 text-white hover:bg-slate-600 rounded-md transition-all ease-in duration-200 flex items-center gap-3", {"border-2 p-1 border-white text-white": pathname === "/user/orders"})}
+            className={clsx(
+              "py-3 px-4 bg-slate-800 text-white hover:bg-slate-600 rounded-md transition-all ease-in duration-200 flex items-center gap-3",
+              {
+                "border-2 p-1 border-white text-white":
+                  pathname === "/user/orders",
+              }
+            )}
           >
-          <BsBorderWidth />  Orders
+            <BsBorderWidth /> Orders
           </Link>
           <Link
             href="/user/user-wishlist"
-            className={clsx("py-3 px-4 bg-slate-800 text-white hover:bg-slate-600 rounded-md transition-all ease-in duration-200 flex items-center gap-3", {"border-2 p-1 border-white text-white": pathname === "/user/user-wishlist"})}
+            className={clsx(
+              "py-3 px-4 bg-slate-800 text-white hover:bg-slate-600 rounded-md transition-all ease-in duration-200 flex items-center gap-3",
+              {
+                "border-2 p-1 border-white text-white":
+                  pathname === "/user/user-wishlist",
+              }
+            )}
           >
-          <FaRegHeart />  Wishlist
+            <FaRegHeart /> Wishlist
           </Link>
-        
-      
+
           <Link
-            href="/user/payment"
-            className={clsx("py-3 px-4 bg-slate-800 text-white hover:bg-slate-600 rounded-md transition-all ease-in duration-200 flex items-center gap-3", {"border-2 p-1 border-white text-white": pathname === "/user/payment"})}
+            href="/user"
+            className={clsx(
+              "py-3 px-4 bg-slate-800 text-white hover:bg-slate-600 rounded-md transition-all ease-in duration-200 flex items-center gap-3",
+              {
+                "border-2 p-1 border-white text-white":
+                  pathname === "/user/payment",
+              }
+            )}
           >
             Payment
           </Link>

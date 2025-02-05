@@ -72,7 +72,6 @@ const createOrderInSanity = async (
         _type: "reference",
         _ref: item._id, // Reference to furniture schema
         _key: item._id,
-        quantity: item.quantity, // Add quantity here
       })),
       totalPrice: cartData.reduce(
         (total, item) =>

@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { client } from "@/sanity/lib/client";
 import { groq } from "next-sanity";
 import Loading from "./loading";
@@ -14,7 +14,7 @@ const OrderPage = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const fetchOrders = async () => {
+  const fetchOrders = useCallback(async () => {
     if (!user) return;
 
     const orderQuery = groq`*[_type == "order" && customer->userId == $userId]{
@@ -40,19 +40,17 @@ const OrderPage = () => {
 
     try {
       const data = await client.fetch(orderQuery, { userId: user.id });
-      console.log(data);
       setOrders(data || []);
     } catch (error) {
       console.error("Error fetching orders:", error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [user]);
 
   useEffect(() => {
-    console.log(user);
     fetchOrders();
-  }, [user]);
+  }, [fetchOrders]);
 
   const filteredOrders = orders.filter((order) =>
     order.cartItems.some((item) =>
@@ -81,7 +79,6 @@ const OrderPage = () => {
             <thead>
               <tr className="bg-gray-200">
                 <th className="px-4 py-2 border">Products</th>
-                <th className="px-4 py-2 border">Quantity</th> {/* Added Quantity column */}
                 <th className="px-4 py-2 border">Created At</th>
                 <th className="px-4 py-2 border">Price</th>
                 <th className="px-4 py-2 border">Total</th>
@@ -89,76 +86,59 @@ const OrderPage = () => {
               </tr>
             </thead>
             <tbody>
-              {filteredOrders.map((order) => {
-                const totalPrice = order.cartItems.reduce((total, item) => {
-                  const discount = item.dicountPercentage
-                    ? (item.price * item.dicountPercentage) / 100
-                    : 0;
-                  return total + (item.price - discount) * item.quantity; // Adjust total price based on quantity
-                }, 0);
+              {filteredOrders.map((order) => (
+                <tr key={order._id} className="text-center border-t">
+                  <td className="px-4 py-2 border">
+                    {order.cartItems.map((item) => (
+                      <div key={item._id} className="flex items-center gap-2">
+                        <Image
+                          src={item.imageUrls[0]}
+                          alt={item.title}
+                          className="w-10 h-10 rounded-md"
+                          width={500}
+                          height={500}
+                        />
+                        <span className="text-12">{item.title}</span>
+                      </div>
+                    ))}
+                  </td>
 
-                return (
-                  <tr key={order._id} className="text-center border-t">
-                    <td className="px-4 py-2 border">
-                      {order.cartItems.map((item) => (
-                        <div key={item._id} className="flex items-center gap-2">
-                          <Image
-                            src={item.imageUrls[0]}
-                            alt={item.title}
-                            className="w-10 h-10 rounded-md"
-                            width={500}
-                            height={500}
-                          />
-                          <span>{item.title}</span>
-                        </div>
-                      ))}
-                    </td>
-                    <td className="px-4 py-2 border">
-                      {order.cartItems.map((item) => (
+                  <td className="px-4 py-2 border text-12">
+                    {new Date(order._createdAt).toLocaleDateString()}
+                  </td>
+                  <td className="px-4 py-2 border text-12">
+                    {order.cartItems.map((item) => {
+                      const discount = item.dicountPercentage
+                        ? (item.price * item.dicountPercentage) / 100
+                        : 0;
+                      return (
                         <div key={item._id}>
-                          <p className="font-semibold">{item.quantity}</p> {/* Display Quantity */}
+                          <p>${(item.price - discount).toFixed(2)}</p>
                         </div>
-                      ))}
-                    </td>
-                    <td className="px-4 py-2 border">
-                      {new Date(order._createdAt).toLocaleDateString()}
-                    </td>
-                    <td className="px-4 py-2 border">
-                      {order.cartItems.map((item) => {
-                        const discount = item.dicountPercentage
-                          ? (item.price * item.dicountPercentage) / 100
-                          : 0;
-                        return (
-                          <div key={item._id}>
-                            <p className="font-semibold">
-                              ${(item.price - discount).toFixed(2)}
-                            </p>
-                          </div>
-                        );
-                      })}
-                    </td>
-                    <td className="px-4 py-2 border font-bold text-green-600">
-                      ${totalPrice.toFixed(2)}
-                    </td>
-                    <td
-                      className={`px-4 py-2 border ${
-                        order.status === "pending"
-                          ? "text-[#FACC15] font-bold"
-                          : order.status === "completed"
-                          ? "text-[#22C55E] font-bold"
-                          : order.status === "dispatch"
-                          ? "text-[#3B82F6] font-bold"
-                          : order.status === "delivered"
-                          ? "text-[#14B8A6] font-bold"
-                          : "text-[#EF4444] font-bold"
-                      }`}
-                    >
-                      {order.status.charAt(0).toUpperCase() +
-                        order.status.slice(1).toLowerCase()}
-                    </td>
-                  </tr>
-                );
-              })}
+                      );
+                    })}
+                  </td>
+                  <td className="px-4 py-2 border font-bold text-12">
+                    ${order.totalPrice.toFixed(2)}
+                  </td>
+                  <td
+                    className={`px-4 py-2 border text-12 ${
+                      order.status === "pending"
+                        ? "text-[#333] font-bold"
+                        : order.status === "completed"
+                        ? "text-[#22C55E] font-bold"
+                        : order.status === "dispatch"
+                        ? "text-[#3B82F6] font-bold"
+                        : order.status === "delivered"
+                        ? "text-[#14B8A6] font-bold"
+                        : "text-[#EF4444] font-bold"
+                    }`}
+                  >
+                    {order.status.charAt(0).toUpperCase() +
+                      order.status.slice(1).toLowerCase()}
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>

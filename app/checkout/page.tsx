@@ -213,21 +213,6 @@ const Checkout = () => {
               </div>
 
               <div>
-                <div className="flex-no-center gap-4 text-gray mb-3">
-                  <input type="radio" id="pay1" name="payment" />
-                  <label htmlFor="pay1" className="lg:text-16 text-14">
-                    Direct Bank Transfer
-                  </label>
-                </div>
-                <div className="flex-no-center gap-4 text-gray mb-3">
-                  <input type="radio" id="pay2" name="payment" />
-                  <label htmlFor="pay2" className="lg:text-16 text-14">
-                    Cash On Delivery
-                  </label>
-                </div>
-              </div>
-
-              <div>
                 <p className="lg:text-16 text-14 font-light mb-3">
                   Your personal data will be used to support your experience
                   throughout this website, to manage access to your account, and

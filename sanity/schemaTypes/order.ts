@@ -15,6 +15,7 @@ export const orderSchema = {
       type: "array",
       of: [{ type: "reference", to: { type: "furniture" } }],
     },
+
     {
       name: "totalPrice",
       title: "Total Price",

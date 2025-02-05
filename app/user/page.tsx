@@ -16,36 +16,26 @@ const DashboardPage = () => {
   const fetchOrders = useCallback(async () => {
     if (!user) return;
 
-    const orderQuery = groq`
-      *[_type == "order" && customer._id == $userId] | order(_createdAt desc) {
+    const orderQuery = groq`*[_type == "order" && customer->userId == $userId]{
+      _id,
+      status,
+      customer->{
         _id,
-        order_date,
-        _createdAt,
-        _updatedAt,
-        items[] {
-          _type,
-          _id,
-          productTitle,
-          productPrice,
-          productQuantity,
-          productImage
-        },
-        customer-> {
-          _id,
-          firstname,
-          lastname,
-          email,
-          phone,
-          streetAddress,
-          city,
-          zipCode,
-          country,
-          province,
-          additionalInfo
-        }
-      }
-    `;
-
+        firstName,
+        lastName,
+        email
+      },
+      cartItems[]->{
+        _id,
+        title,
+        price,
+        discountPercentage,
+        quantity,
+        "imageUrls": productImage[].asset->url
+      },
+      _createdAt,
+      totalPrice
+    }`;
     try {
       const data = await client.fetch(orderQuery, { userId: user.id });
       setOrders(data || []);
