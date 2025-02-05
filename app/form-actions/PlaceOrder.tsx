@@ -81,6 +81,7 @@ const createOrderInSanity = async (
         0
       ),
       status: "pending", // Default status when order is created
+      paymentMethod : customerData.paymentMethod,
     };
 
     const response = await clientCreateDelete.create(orderObject);

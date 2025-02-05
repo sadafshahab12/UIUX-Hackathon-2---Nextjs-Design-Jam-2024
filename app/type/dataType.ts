@@ -116,6 +116,7 @@ export interface SanityCustomerType {
   phone: string;
   email: string;
   additionalInfo: string;
+  paymentMethod: string;
 }
 
 // order page data type
@@ -135,6 +136,7 @@ export interface OrderPageCustomerType {
   country: string;
   province: string;
   additionalInfo: string;
+  
 }
 
 // Data type for the Order

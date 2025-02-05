@@ -11,12 +11,17 @@ import Image from "next/image";
 import PlaceOrder from "../form-actions/PlaceOrder";
 import Swal from "sweetalert2";
 import { useUser } from "@clerk/clerk-react";
+import { set } from "sanity";
 
 const Checkout = () => {
   const { cartItems, setCartItems } = useContext(
     ProductContext
   ) as CountContext;
+  const [paymentMethod, setPaymentMethod] = useState<string>("");
 
+  const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setPaymentMethod(e.target.value);
+  };
   const total = cartItems.reduce((total, item) => {
     const discount = (item.price * item.dicountPercentage) / 100; // Calculate discount
     const discountedPrice = item.price - discount; // Apply discount
@@ -37,6 +42,7 @@ const Checkout = () => {
     phone: "",
     email: "",
     additionalInfo: "",
+    paymentMethod: "",
   });
 
   // Error state for each field
@@ -104,7 +110,7 @@ const Checkout = () => {
     }
 
     // Add user ID to customer data
-    const updatedCustomerData = { ...customerData, userId };
+    const updatedCustomerData = { ...customerData, userId , paymentMethod};
 
     // Proceed with placing the order
     await PlaceOrder(cartItems, updatedCustomerData);
@@ -128,6 +134,7 @@ const Checkout = () => {
       phone: "",
       email: "",
       additionalInfo: "",
+      paymentMethod: "",
     });
     setErrors({});
     setCartItems([]);
@@ -211,7 +218,20 @@ const Checkout = () => {
                   shipped until the funds have cleared in our account.
                 </p>
               </div>
-
+              <div>
+                <div className="flex-no-center gap-4 text-gray mb-3">
+                  <input type="radio" id="pay1" name="payment" value={"Direct Bank Transfer"} onChange={handlePaymentChange} />
+                  <label htmlFor="pay1" className="lg:text-16 text-14">
+                    Direct Bank Transfer
+                  </label>
+                </div>
+                <div className="flex-no-center gap-4 text-gray mb-3">
+                  <input type="radio" id="pay2" name="payment"  value={"Cash On Delivery"} onChange={handlePaymentChange}/>
+                  <label htmlFor="pay2" className="lg:text-16 text-14">
+                    Cash On Delivery
+                  </label>
+                </div>
+              </div>
               <div>
                 <p className="lg:text-16 text-14 font-light mb-3">
                   Your personal data will be used to support your experience
