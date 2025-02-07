@@ -7,6 +7,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { createClient } from "next-sanity";
 import Swal from "sweetalert2";
+import Hero from "../components/ui/Hero";
 
 interface Country {
   cca2: string;
@@ -26,7 +27,7 @@ interface RentalCustomerFormData {
   zipCode: string;
 }
 
-const Checkout = () => {
+const RentalCheckout = () => {
   const searchParams = useSearchParams();
   const product = searchParams.get("product");
   const rentalProduct = product ? JSON.parse(product) : null;
@@ -42,7 +43,7 @@ const Checkout = () => {
   const [isManualCity, setIsManualCity] = useState(false);
   const [isManualState, setIsManualState] = useState(false);
 
-console.log(setState)
+  console.log(setState);
   const quantity = rentalProduct.quantity;
   const totalPrice = rentalProduct.totalPrice;
 
@@ -204,319 +205,357 @@ console.log(setState)
   if (!rentalProduct) {
     return (
       <div className="text-center text-red-500 font-semibold">
-        No rental product found.
+        <p>CheckOut is Empty</p>
       </div>
     );
   }
   return (
-    <div className="container mx-auto p-8 bg-gray-50 min-h-screen mt-20">
-      <h1 className="text-3xl font-bold text-center mb-6 text-slate-800">
-        Checkout
-      </h1>
-      <div className="grid grid-cols-2 gap-6">
-        {/* Product Summary */}
-        <div className=" p-6 rounded-lg flex items-center gap-4">
-          <Image
-            src={rentalProduct.imageUrls[0]}
-            alt="checkout-img"
-            width={500}
-            height={500}
-            className="w-40 h-40 object-cover rounded-lg shadow-md mb-6"
-          />
-          <div className="space-y-2">
-            <h1>Product: {rentalProduct.title}</h1>
-            <p className="text-sm text-gray-800">
-              <strong>Rental Price Per Day:</strong> ${" "}
-              {rentalProduct.rentalPricePerDay}
-            </p>
-            <p className="text-sm text-gray-800">
-              <strong>Rental Start Date:</strong>{" "}
-              {rentalProduct.rental.startDate}
-            </p>
-            <p className="text-sm text-gray-800">
-              <strong>Rental End Date:</strong> {rentalProduct.rental.endDate}
-            </p>
-            <p className="text-sm text-gray-800">
-              <strong>Total Rental Days:</strong>{" "}
-              {rentalProduct.rental.totalDays}
-            </p>
-            <p className="text-sm text-gray-800">
-              <strong>Quantity:</strong> {quantity}
-            </p>
-            <p className="text-sm text-gray-800">
-              <strong>Total Rental Price:</strong> ${totalPrice}
-            </p>
-          </div>
-        </div>
-
-        {/* Checkout Form */}
-        <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-3">
-          <h1 className="text-2xl font-bold py-4">Place For Rent</h1>
-
-          {/* Form Fields */}
-          <div className="space-y-2">
-            <label className="block text-slate-800 text-sm font-medium">
-              Full Name
-            </label>
-            <input
-              type="text"
-              className="w-full py-3 px-4 border border-slate-800 rounded-md text-sm"
-              placeholder="Enter Full Name"
-              {...register("fullName")}
-            />
-            {errors.fullName && (
-              <p className="text-red-500 text-sm">
-                {errors.fullName.message as string}
-              </p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <label className="block text-slate-800 text-sm font-medium">
-              Email
-            </label>
-            <input
-              type="email"
-              className="w-full py-3 px-4 border border-slate-800 rounded-md text-sm"
-              placeholder="Enter Email Address"
-              {...register("email")}
-            />
-            {errors.email && (
-              <p className="text-red-500 text-sm">
-                {errors.email.message as string}
-              </p>
-            )}
+    <div className="sm:-mt-0 -mt-4">
+      <Hero
+        navName="Rental CheckOut"
+        title="Rental CheckOut"
+        navLink="/rental-checkout"
+      />
+      <div className=" mx-auto lg:p-8 xss:p-4 p-2 bg-gray-50 min-h-screen ">
+        <div className="grid lg:grid-cols-2 grid-cols-1 md:gap-6 gap-3">
+          {/* Product Summary */}
+          <div className=" lg:p-6 p-3 rounded-lg  gap-4">
+            <div className="p-2 bg-yellow-600 mb-5 rounded-lg">
+              <Image
+                src={rentalProduct.imageUrls[0]}
+                alt="checkout-img"
+                width={500}
+                height={500}
+                className="w-full md:h-[25rem] xs:h-[20rem] h-[15rem] object-cover rounded-lg shadow-md "
+              />
+            </div>
+            <div className="lg:space-y-6 space-y-3">
+              <h1 className="md:text-2xl text-xl font-bold">
+                {rentalProduct.title}
+              </h1>
+              <div className="flex justify-between xss:px-4 px-2">
+                <p className="xss:text-sm text-12 text-gray-800 ">
+                  Rental Price Per Day:
+                </p>
+                <p className="xss:text-sm text-12 text-gray-800 ">
+                  ${rentalProduct.rentalPricePerDay}
+                </p>
+              </div>
+              <div className="flex justify-between xss:px-4 px-2">
+                <p className="xss:text-sm text-12 text-gray-800 ">
+                  Rental Start Date:
+                </p>
+                <p className="xss:text-sm text-12 text-gray-800 ">
+                  {rentalProduct.rental.startDate}
+                </p>
+              </div>
+              <div className="flex justify-between xss:px-4 px-2">
+                <p className="xss:text-sm text-12 text-gray-800 ">
+                  Rental End Date:
+                </p>
+                <p className="xss:text-sm text-12 text-gray-800 ">
+                  {rentalProduct.rental.endDate}
+                </p>
+              </div>
+              <div className="flex justify-between xss:px-4 px-2">
+                <p className="xss:text-sm text-12 text-gray-800 ">
+                  Total Rental Days:
+                </p>
+                <p className="xss:text-sm text-12 text-gray-800 ">
+                  {rentalProduct.rental.totalDays}
+                </p>
+              </div>
+              <div className="flex justify-between xss:px-4 px-2">
+                <p className="xss:text-sm text-12 text-gray-800 ">Quantity:</p>{" "}
+                <p className="xss:text-sm text-12 text-gray-800 ">
+                  {" "}
+                  {quantity}
+                </p>
+              </div>
+              <div className="flex justify-between xss:px-4 px-2 bg-slate-300 py-3 font-bold border-t border-b border-t-slate-800 border-b-slate-800 ">
+                <p className="xss:text-sm text-12 text-gray-800 ">
+                  Total Rental Price:{" "}
+                </p>{" "}
+                <p className="xss:text-sm text-12 text-gray-800 ">
+                  {" "}
+                  ${totalPrice}
+                </p>
+              </div>
+            </div>
           </div>
 
-          <div className="space-y-2">
-            <label className="block text-slate-800 text-sm font-medium">
-              Address
-            </label>
-            <input
-              type="text"
-              className="w-full py-3 px-4 border border-slate-800 rounded-md"
-              placeholder="Enter Residential Address"
-              {...register("address")}
-            />
-            {errors.address && (
-              <p className="text-red-500 text-sm">
-                {errors.address.message as string}
-              </p>
-            )}
-          </div>
+          {/* Checkout Form */}
+          <form
+            onSubmit={handleSubmit(handleFormSubmit)}
+            className="space-y-3 p-4"
+          >
+            <h1 className="text-2xl font-bold py-4 lg:text-left text-center">
+              Place For Rent
+            </h1>
 
-          <div className="space-y-2">
-            <label className="block text-slate-800 text-sm font-medium">
-              Phone Number
-            </label>
-            <input
-              type="text"
-              className="w-full py-3 px-4 border border-slate-800 rounded-md"
-              placeholder="Enter Phone Number"
-              {...register("phone")}
-            />
-            {errors.phone && (
-              <p className="text-red-500 text-sm">
-                {errors.phone.message as string}
-              </p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <label className="block text-slate-800 text-sm font-medium">
-              Country
-            </label>
-            <select
-              id="country"
-              className="border border-slate-800 w-full py-3 px-4 rounded-md"
-              value={selectedCountry}
-              {...register("country")}
-              onChange={(e) => setSelectedCountry(e.target.value)}
-            >
-              <option value="">Select a country</option>
-              {countries.map((country) => (
-                <option key={country.cca2} value={country.name.common}>
-                  {country.name.common}
-                </option>
-              ))}
-            </select>
-            {errors.country && (
-              <p className="text-red-500 text-sm">
-                {errors.country.message as string}
-              </p>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <label className="block text-slate-800 text-sm font-medium">
-              City
-            </label>
-            {cities.length > 0 ? (
-              <>
-                <select
-                  id="city"
-                  className="border border-gray-300 rounded p-2 w-full"
-                  {...register("city")}
-                >
-                  <option value="">Select a city</option>
-                  {cities.map((city, index) => (
-                    <option key={index} value={city}>
-                      {city}
-                    </option>
-                  ))}
-                </select>
-                {errors.city && (
-                  <p className="text-red-500 text-sm">
-                    {errors.city.message as string}
-                  </p>
-                )}
-                <button
-                  type="button"
-                  className="mt-2 text-blue-500"
-                  onClick={() => setIsManualCity(!isManualCity)}
-                >
-                  {`Can't`} find your city? Add it manually
-                </button>
-                {isManualCity && (
-                  <>
-                    <input
-                      type="text"
-                      className="w-full py-3 px-4 border border-slate-800 rounded-md text-sm mt-2"
-                      value={manualCity}
-                      placeholder="Enter city manually"
-                      {...register("city")}
-                    />
-                    {errors.city && (
-                      <p className="text-red-500 text-sm">
-                        {errors.city.message as string}
-                      </p>
-                    )}
-                  </>
-                )}
-              </>
-            ) : (
-              <>
-                <input
-                  type="text"
-                  className="w-full py-3 px-4 border border-slate-800 rounded-md text-sm"
-                  value={manualCity}
-                  placeholder="Enter city manually"
-                  {...register("city", {
-                    onChange: (e) => setManualCity(e.target.value),
-                  })}
-                />
-                {errors.city && (
-                  <p className="text-red-500 text-sm">
-                    {errors.city.message as string}
-                  </p>
-                )}
-              </>
-            )}
-          </div>
-
-          <div className="space-y-2">
-            <label className="block text-slate-800 text-sm font-medium">
-              State
-            </label>
-            {state.length > 0 ? (
-              <>
-                <select
-                  id="state"
-                  className="border border-gray-300 rounded p-2 w-full"
-                  value={selectedState}
-                  {...register("state", {
-                    onChange: (e) => {
-                      setSelectedState(e.target.value); // Handle dropdown selection
-                      setManualState(""); // Clear manual input when a state is selected
-                    },
-                  })}
-                >
-                  {state.map((states, index) => (
-                    <option key={index} value={states}>
-                      {states}
-                    </option>
-                  ))}
-                </select>
-                {errors.state && (
-                  <p className="text-red-500 text-sm">
-                    {errors.state.message as string}
-                  </p>
-                )}
-                <button
-                  type="button"
-                  className="mt-2 text-blue-500"
-                  onClick={() => setIsManualState(!isManualState)}
-                >
-                  {`Can't`} find your state? Add it manually
-                </button>
-                {isManualState && (
-                  <>
-                    <input
-                      type="text"
-                      className="w-full py-3 px-4 border border-slate-800 rounded-md text-sm mt-2"
-                      value={manualState}
-                      placeholder="Enter state manually"
-                      {...register("state", {
-                        onChange: (e) => setManualState(e.target.value),
-                      })} // Register the manual input with react-hook-form
-                    />
-                    {errors.state && (
-                      <p className="text-red-500 text-sm">
-                        {errors.state.message as string}
-                      </p>
-                    )}
-                  </>
-                )}
-              </>
-            ) : (
+            {/* Form Fields */}
+            <div className="space-y-2">
+              <label className="block text-slate-800 text-sm font-medium">
+                Full Name
+              </label>
               <input
                 type="text"
                 className="w-full py-3 px-4 border border-slate-800 rounded-md text-sm"
-                value={manualState}
-                {...register("state", {
-                  onChange: (e) => {
-                    setManualState(e.target.value); // Update local state
-                  },
-                })}
+                placeholder="Enter Full Name"
+                {...register("fullName")}
               />
-            )}
-          </div>
+              {errors.fullName && (
+                <p className="text-red-500 text-sm">
+                  {errors.fullName.message as string}
+                </p>
+              )}
+            </div>
 
-          <div className="space-y-2">
-            <label className="block text-slate-800 text-sm font-medium">
-              Zip Code
-            </label>
-            <input
-              type="text"
-              className="w-full py-3 px-4 border border-slate-800 rounded-md text-sm"
-              placeholder="Enter Zip Code"
-              {...register("zipCode")}
-            />
-            {errors.zipCode && (
-              <p className="text-red-500 text-sm">
-                {errors.zipCode.message as string}
-              </p>
-            )}
-          </div>
+            <div className="space-y-2">
+              <label className="block text-slate-800 text-sm font-medium">
+                Email
+              </label>
+              <input
+                type="email"
+                className="w-full py-3 px-4 border border-slate-800 rounded-md text-sm"
+                placeholder="Enter Email Address"
+                {...register("email")}
+              />
+              {errors.email && (
+                <p className="text-red-500 text-sm">
+                  {errors.email.message as string}
+                </p>
+              )}
+            </div>
 
-          <button
-            type="submit"
-            className="w-full py-3 px-4 bg-blue-600 text-white font-medium rounded-md"
-          >
-            Proceed to Payment
-          </button>
-        </form>
+            <div className="space-y-2">
+              <label className="block text-slate-800 text-sm font-medium">
+                Address
+              </label>
+              <input
+                type="text"
+                className="w-full py-3 px-4 border border-slate-800 rounded-md"
+                placeholder="Enter Residential Address"
+                {...register("address")}
+              />
+              {errors.address && (
+                <p className="text-red-500 text-sm">
+                  {errors.address.message as string}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-slate-800 text-sm font-medium">
+                Phone Number
+              </label>
+              <input
+                type="text"
+                className="w-full py-3 px-4 border border-slate-800 rounded-md"
+                placeholder="Enter Phone Number"
+                {...register("phone")}
+              />
+              {errors.phone && (
+                <p className="text-red-500 text-sm">
+                  {errors.phone.message as string}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-slate-800 text-sm font-medium">
+                Country
+              </label>
+              <select
+                id="country"
+                className="border border-slate-800 w-full py-3 px-4 rounded-md"
+                value={selectedCountry}
+                {...register("country")}
+                onChange={(e) => setSelectedCountry(e.target.value)}
+              >
+                <option value="">Select a country</option>
+                {countries.map((country) => (
+                  <option key={country.cca2} value={country.name.common}>
+                    {country.name.common}
+                  </option>
+                ))}
+              </select>
+              {errors.country && (
+                <p className="text-red-500 text-sm">
+                  {errors.country.message as string}
+                </p>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-slate-800 text-sm font-medium">
+                City
+              </label>
+              {cities.length > 0 ? (
+                <>
+                  <select
+                    id="city"
+                    className="border border-gray-300 rounded p-2 w-full"
+                    {...register("city")}
+                  >
+                    <option value="">Select a city</option>
+                    {cities.map((city, index) => (
+                      <option key={index} value={city}>
+                        {city}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.city && (
+                    <p className="text-red-500 text-sm">
+                      {errors.city.message as string}
+                    </p>
+                  )}
+                  <button
+                    type="button"
+                    className="mt-2 text-blue-500"
+                    onClick={() => setIsManualCity(!isManualCity)}
+                  >
+                    {`Can't`} find your city? Add it manually
+                  </button>
+                  {isManualCity && (
+                    <>
+                      <input
+                        type="text"
+                        className="w-full py-3 px-4 border border-slate-800 rounded-md text-sm mt-2"
+                        value={manualCity}
+                        placeholder="Enter city manually"
+                        {...register("city")}
+                      />
+                      {errors.city && (
+                        <p className="text-red-500 text-sm">
+                          {errors.city.message as string}
+                        </p>
+                      )}
+                    </>
+                  )}
+                </>
+              ) : (
+                <>
+                  <input
+                    type="text"
+                    className="w-full py-3 px-4 border border-slate-800 rounded-md text-sm"
+                    value={manualCity}
+                    placeholder="Enter city manually"
+                    {...register("city", {
+                      onChange: (e) => setManualCity(e.target.value),
+                    })}
+                  />
+                  {errors.city && (
+                    <p className="text-red-500 text-sm">
+                      {errors.city.message as string}
+                    </p>
+                  )}
+                </>
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-slate-800 text-sm font-medium">
+                State
+              </label>
+              {state.length > 0 ? (
+                <>
+                  <select
+                    id="state"
+                    className="border border-gray-300 rounded p-2 w-full"
+                    value={selectedState}
+                    {...register("state", {
+                      onChange: (e) => {
+                        setSelectedState(e.target.value); // Handle dropdown selection
+                        setManualState(""); // Clear manual input when a state is selected
+                      },
+                    })}
+                  >
+                    {state.map((states, index) => (
+                      <option key={index} value={states}>
+                        {states}
+                      </option>
+                    ))}
+                  </select>
+                  {errors.state && (
+                    <p className="text-red-500 text-sm">
+                      {errors.state.message as string}
+                    </p>
+                  )}
+                  <button
+                    type="button"
+                    className="mt-2 text-blue-500"
+                    onClick={() => setIsManualState(!isManualState)}
+                  >
+                    {`Can't`} find your state? Add it manually
+                  </button>
+                  {isManualState && (
+                    <>
+                      <input
+                        type="text"
+                        className="w-full py-3 px-4 border border-slate-800 rounded-md text-sm mt-2"
+                        value={manualState}
+                        placeholder="Enter state manually"
+                        {...register("state", {
+                          onChange: (e) => setManualState(e.target.value),
+                        })} // Register the manual input with react-hook-form
+                      />
+                      {errors.state && (
+                        <p className="text-red-500 text-sm">
+                          {errors.state.message as string}
+                        </p>
+                      )}
+                    </>
+                  )}
+                </>
+              ) : (
+                <input
+                  type="text"
+                  className="w-full py-3 px-4 border border-slate-800 rounded-md text-sm"
+                  value={manualState}
+                  {...register("state", {
+                    onChange: (e) => {
+                      setManualState(e.target.value); // Update local state
+                    },
+                  })}
+                />
+              )}
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-slate-800 text-sm font-medium">
+                Zip Code
+              </label>
+              <input
+                type="text"
+                className="w-full py-3 px-4 border border-slate-800 rounded-md text-sm"
+                placeholder="Enter Zip Code"
+                {...register("zipCode")}
+              />
+              {errors.zipCode && (
+                <p className="text-red-500 text-sm">
+                  {errors.zipCode.message as string}
+                </p>
+              )}
+            </div>
+
+            <button
+              type="submit"
+              className="w-full py-3 px-4 bg-slate-800 text-sm text-white font-medium rounded-md"
+            >
+              Proceed to Payment
+            </button>
+          </form>
+        </div>
       </div>
     </div>
   );
 };
 
-
-
 export default function Page() {
   return (
     <Suspense fallback={<div>Loading...</div>}>
-      <Checkout />
+      <RentalCheckout />
     </Suspense>
   );
 }

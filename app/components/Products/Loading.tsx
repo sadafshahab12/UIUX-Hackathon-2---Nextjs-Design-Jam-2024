@@ -5,7 +5,6 @@ const Loading = () => {
   const card = Array.from({ length: 8 });
   return (
     <>
-
       {card.map((_, index) => (
         <div
           key={index}
@@ -23,7 +22,6 @@ const Loading = () => {
           </div>
         </div>
       ))}
-
     </>
   );
 };

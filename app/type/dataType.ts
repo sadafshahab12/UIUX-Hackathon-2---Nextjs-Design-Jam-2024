@@ -47,10 +47,14 @@ export interface CountContext {
   addToCart: (product: ProductType, quantity: number) => void; // Add product to cart with quantity
   handleAddToWishlist: (product: ProductType, quantity: number) => void; // Add product to wishlist with quantity
   wishlist: WishList[]; // List of wishlist items
-  handleRemoveFromWishlist: (productId: string) => void;  // Remove product from wishlist by ID
+  handleRemoveFromWishlist: (productId: string) => void; // Remove product from wishlist by ID
   handleClearSearchQuery: () => void;
   setCartItems: (items: CartItem[]) => void;
-  addToRentalCart: (product: ProductType, rentalStartDate: string, rentalEndDate: string) => void;
+  addToRentalCart: (
+    product: ProductType,
+    rentalStartDate: string,
+    rentalEndDate: string
+  ) => void;
 }
 
 // CartItem extends ProductType to add quantity for cart items

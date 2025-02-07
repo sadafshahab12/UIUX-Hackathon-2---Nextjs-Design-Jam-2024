@@ -14,9 +14,7 @@ import { useUser } from "@clerk/clerk-react";
 import { createClient } from "next-sanity";
 
 const Checkout = () => {
-  const { cartItems } = useContext(
-    ProductContext
-  ) as CountContext;
+  const { cartItems } = useContext(ProductContext) as CountContext;
   const [paymentMethod, setPaymentMethod] = useState<string>("");
 
   const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,7 +70,6 @@ const Checkout = () => {
 
   // Validate form fields
 
-
   // Handle form submit
   const { user } = useUser(); // Get user from Clerk
   const handlePlaceOrder = async () => {
@@ -91,13 +88,17 @@ const Checkout = () => {
       Swal.fire("Error", "Please fill all customer data fields.", "error");
       return; // Stop execution if customer data is incomplete
     }
-  
+
     // Check if there are no products in the cart
     if (cartItems.length === 0) {
-      Swal.fire("Error", "Your cart is empty. Please add products to your cart.", "error");
+      Swal.fire(
+        "Error",
+        "Your cart is empty. Please add products to your cart.",
+        "error"
+      );
       return; // Stop execution if no products are in the cart
     }
-  
+
     const clientCreate = createClient({
       projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
       dataset: process.env.NEXT_PUBLIC_SANITY_DATASET,
@@ -105,7 +106,7 @@ const Checkout = () => {
       useCdn: true,
       token: process.env.NEXT_PUBLIC_SANITY_TOKEN,
     });
-  
+
     try {
       // Create customer document in Sanity (if it doesn't exist)
       const customerDoc = await clientCreate.create({
@@ -122,7 +123,7 @@ const Checkout = () => {
         additionalInfo: customerData.additionalInfo,
         clerkUserId: user?.id,
       });
-  
+
       // Create the order document
       const orderData = {
         _type: "order",
@@ -136,10 +137,10 @@ const Checkout = () => {
         paymentMethod: paymentMethod,
         status: "pending", // Default order status
       };
-  
+
       // Send the order data to Sanity
       const response = await clientCreate.create(orderData);
-  
+
       if (response) {
         Swal.fire(
           "Order Placed!",
@@ -151,10 +152,10 @@ const Checkout = () => {
       }
     } catch (error) {
       Swal.fire("Error", "There was an issue placing your order.", "error");
-      console.log(error)
+      console.log(error);
     }
   };
-  
+
   return (
     <>
       <div>

@@ -7,12 +7,9 @@ import Loading from "./Loading";
 import { ProductContext } from "../context/ProductContext";
 
 const ShopPro = ({ products }: { products: ProductType[] }) => {
-  const {loading} = useContext(ProductContext) as CountContext
+  const { loading } = useContext(ProductContext) as CountContext;
   if (loading) {
-    return (
-
-        <Loading />
-    );
+    return <Loading />;
   }
   return (
     <>

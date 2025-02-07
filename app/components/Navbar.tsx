@@ -5,6 +5,7 @@ import React, { useContext, useState } from "react";
 import { poppins } from "../fonts/font";
 import Link from "next/link";
 import Logo from "./ui/Logo";
+import { GrDeliver } from "react-icons/gr";
 
 import { ProductContext } from "./context/ProductContext";
 import { CountContext } from "../type/dataType";
@@ -43,7 +44,7 @@ const Navbar = () => {
             </div>
           </div>
 
-          <ul className={` md:flex items-center hidden lg:gap-20 gap-10`}>
+          <ul className={` md:flex items-center hidden lg:gap-16 gap-10`}>
             <li>
               <Link href="/" className="text-16 font-medium">
                 Home
@@ -108,7 +109,7 @@ const Navbar = () => {
             {isLoaded &&
               (isSignedIn ? (
                 <>
-                  <div className=" xss:block hidden lg:w-[28px] w-[20px] lg:h-[28px] h-[20px] cursor-pointer">
+                  <div className=" xs:block hidden lg:w-[28px] w-[20px] lg:h-[28px] h-[20px] cursor-pointer">
                     <Link href="/user">
                       <UserButton>
                         <UserButton.MenuItems>
@@ -122,7 +123,7 @@ const Navbar = () => {
                     </Link>
                   </div>
 
-                  <div className=" md:w-[28px] w-[20px] md:h-[28px] h-[20px] cursor-pointer relative">
+                  <div className="cursor-pointer relative">
                     <Link href="/wishlist">
                       <CiHeart className="sm:w-8 w-6 sm:h-8 h-6" />
                     </Link>
@@ -130,13 +131,18 @@ const Navbar = () => {
                       {wishlist.length}
                     </p>
                   </div>
-                  <div className="md:w-[28px] w-[20px] md:h-[28px] h-[20px] cursor-pointer relative">
+                  <div className="cursor-pointer relative">
                     <Link href={"/cart"}>
                       <AiOutlineShoppingCart className="sm:w-8 w-6 sm:h-8 h-6" />
                     </Link>
                     <p className="absolute -top-2 -right-2 bg-yellow-400 w-5 h- text-sm flex justify-center items-center rounded-full">
                       {cartItems.length}
                     </p>
+                  </div>
+                  <div className="cursor-pointer sm:block hidden">
+                    <Link href={"/rental-cart"}>
+                      <GrDeliver className="sm:w-7 w-6 sm:h-7 h-6" />
+                    </Link>
                   </div>
                 </>
               ) : (

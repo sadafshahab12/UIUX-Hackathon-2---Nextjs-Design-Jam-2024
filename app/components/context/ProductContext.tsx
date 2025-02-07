@@ -244,7 +244,11 @@ export const ProductProvider = ({ children }: ProductProviderType) => {
     });
   };
 
-  const addToRentalCart = (product: ProductType, rentalStartDate: string, rentalEndDate: string) => {
+  const addToRentalCart = (
+    product: ProductType,
+    rentalStartDate: string,
+    rentalEndDate: string
+  ) => {
     if (!isSignedIn) {
       // If the user is not signed in, open the sign-in modal
       clerk.openSignIn();
@@ -254,19 +258,21 @@ export const ProductProvider = ({ children }: ProductProviderType) => {
       alert("Out of Stock");
       return;
     }
-  
+
     // Calculate the rental days and total rental price
     const rentalStart = new Date(rentalStartDate);
     const rentalEnd = new Date(rentalEndDate);
-    const rentalDays = Math.ceil((rentalEnd.getTime() - rentalStart.getTime()) / (1000 * 3600 * 24));
+    const rentalDays = Math.ceil(
+      (rentalEnd.getTime() - rentalStart.getTime()) / (1000 * 3600 * 24)
+    );
     const totalRentalPrice = rentalDays * (product.rentalPricePerDay || 0);
-  
+
     setCartItems((prevCart) => {
       // Check current state of cartItems
       const existingProductIndex = prevCart.findIndex(
         (item) => item._id === product._id
       );
-  
+
       if (existingProductIndex !== -1) {
         const updatedCart = [...prevCart];
         updatedCart[existingProductIndex] = {
@@ -277,12 +283,19 @@ export const ProductProvider = ({ children }: ProductProviderType) => {
       } else {
         const updatedCart = [
           ...prevCart,
-          { ...product, rentalStartDate, rentalEndDate, rentalDays, totalRentalPrice, quantity: 1 },
+          {
+            ...product,
+            rentalStartDate,
+            rentalEndDate,
+            rentalDays,
+            totalRentalPrice,
+            quantity: 1,
+          },
         ];
         return updatedCart;
       }
     });
-  
+
     Swal.fire({
       text: `${product.title} added to Rental Cart!`,
       icon: "success",
@@ -291,7 +304,7 @@ export const ProductProvider = ({ children }: ProductProviderType) => {
       showConfirmButton: false,
     });
   };
-  
+
   return (
     <ProductContext.Provider
       value={{
@@ -313,7 +326,7 @@ export const ProductProvider = ({ children }: ProductProviderType) => {
         handleRemoveFromWishlist,
         loading,
         error,
-        addToRentalCart
+        addToRentalCart,
       }}
     >
       <div>{children}</div>

@@ -69,7 +69,6 @@ const SingleProduct = () => {
   };
 
   // Handler for adding a rental product to the cart
- 
 
   useEffect(() => {
     const fetchSingleProductData = async () => {
@@ -155,7 +154,11 @@ const SingleProduct = () => {
   };
 
   if (loading) {
-    return( <div ><LoadingPage /></div>);
+    return (
+      <div>
+        <LoadingPage />
+      </div>
+    );
   }
 
   if (error) {
@@ -336,56 +339,53 @@ const SingleProduct = () => {
                     Add to WishList
                   </button>
                 </div>
-
-                {/* Rental Options (Shown only if availableForRental is true) */}
-                {singleFurniture.availableForRental && (
-                  <div className="rental-options mt-4 p-4 border rounded-md">
-                    <h3 className="sm:text-lg text-14 font-semibold mb-2">
-                      Rent This Product
-                    </h3>
-                    <div className="flex flex-col gap-3">
-                      <label className="text-sm">
-                        Rental Start Date:
+                <div className="py-8">
+                  {/* Rental Options (Shown only if availableForRental is true) */}
+                  {singleFurniture.availableForRental && (
+                    <div className="rental-options p-4 border border-slate-800  rounded-md">
+                      <h3 className="sm:text-lg text-14 font-semibold mb-4">
+                        Rent This Product
+                      </h3>
+                      <div className="flex flex-col gap-3">
+                        <label className="text-sm">Rental Start Date: </label>
                         <input
                           type="date"
                           value={rentalStartDate}
                           onChange={handleStartDateChange}
-                          className="border p-1 ml-2"
+                          className="border border-slate-800  p-2 rounded-md w-full md:text-lg text-14"
                         />
-                      </label>
-                      <label className="text-sm">
-                        Rental End Date:
+
+                        <label className="text-sm">Rental End Date: </label>
                         <input
                           type="date"
                           value={rentalEndDate}
                           onChange={handleEndDateChange}
-                          className="border p-1 ml-2"
+                          className="border border-slate-800  p-2 rounded-md w-full md:text-lg text-14"
                         />
-                      </label>
+                      </div>
+                      <div className="md:mt-10 mt-5 sm:text-lg text-14  flex sm:flex-row flex-col gap-4 justify-between">
+                        <p>
+                          Total Rental Days:{" "}
+                          {calculateRentalDays(rentalStartDate, rentalEndDate)}
+                        </p>
+                        <p>
+                          Total Rental Price: $
+                          {calculateRentalPrice(
+                            rentalStartDate,
+                            rentalEndDate,
+                            singleFurniture.rentalPricePerDay ?? 0
+                          )}
+                        </p>
+                      </div>
+                      <button
+                        onClick={() => handleAddToCartRental(singleFurniture)}
+                        className="mt-3 border  bg-yellow-500 py-2 px-4 rounded-md text-14 w-full"
+                      >
+                        Rent Now
+                      </button>
                     </div>
-                    <div className="mt-3 text-sm">
-                      <p>
-                        Total Rental Days:{" "}
-                        {calculateRentalDays(rentalStartDate, rentalEndDate)}
-                      </p>
-                      <p>
-                        Total Rental Price: $
-                        {calculateRentalPrice(
-                          rentalStartDate,
-                          rentalEndDate,
-                          singleFurniture.rentalPricePerDay ?? 0
-                        )}
-                      </p>
-                    </div>
-                    <button
-                      onClick={() => handleAddToCartRental(singleFurniture)}
-                      className="mt-3 border border-slate-800 py-2 px-4 rounded-md text-14"
-                    >
-                      Rent Now
-                    </button>
-                  </div>
-                )}
-
+                  )}
+                </div>
                 <div className="border-b border-gray-400 lg:py-5 py-3"></div>
                 <div className="text-16 text-gray grid grid-cols-[1fr_1fr_5fr] mt-5">
                   <div className="lg:space-y-4 space-y-2 lg:text-16 text-14 grid">

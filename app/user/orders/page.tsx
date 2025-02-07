@@ -126,12 +126,12 @@ const OrderPage = () => {
                       order.status === "pending"
                         ? "text-[#333] font-bold"
                         : order.status === "completed"
-                        ? "text-[#22C55E] font-bold"
-                        : order.status === "dispatch"
-                        ? "text-[#3B82F6] font-bold"
-                        : order.status === "delivered"
-                        ? "text-[#14B8A6] font-bold"
-                        : "text-[#EF4444] font-bold"
+                          ? "text-[#22C55E] font-bold"
+                          : order.status === "dispatch"
+                            ? "text-[#3B82F6] font-bold"
+                            : order.status === "delivered"
+                              ? "text-[#14B8A6] font-bold"
+                              : "text-[#EF4444] font-bold"
                     }`}
                   >
                     {order.status.charAt(0).toUpperCase() +

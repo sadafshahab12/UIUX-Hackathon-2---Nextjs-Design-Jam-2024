@@ -58,7 +58,8 @@ const RelatedPro = () => {
   return (
     <>
       {product.slice(0, 4).map((furniture: ProductType, index: number) => {
-        const discountPrice = (furniture.price * furniture.dicountPercentage) / 100;
+        const discountPrice =
+          (furniture.price * furniture.dicountPercentage) / 100;
         const discounted = furniture.price - discountPrice;
         return (
           <div
@@ -80,13 +81,17 @@ const RelatedPro = () => {
                   className={`discount sm:h-[3rem] h-[2.5rem] sm:w-[3rem] w-[2.5rem] rounded-full flex-center text-white absolute top-3 right-5 ${furniture.isNew === true ? "bg-[#2EC1AC]" : "bg-[#E97171]"}`}
                 >
                   <p className="sm:text-14 text-12">
-                    {furniture.isNew ? "New" : `${furniture.dicountPercentage}%`}
+                    {furniture.isNew
+                      ? "New"
+                      : `${furniture.dicountPercentage}%`}
                   </p>
                 </div>
               )}
             </div>
             <div className="content bg-[#F4F5F7] py-3 px-5 space-y-3 h-[8.5rem]">
-              <h1 className="md:text-18 text-14 font-semibold">{furniture.title}</h1>
+              <h1 className="md:text-18 text-14 font-semibold">
+                {furniture.title}
+              </h1>
               <div className="flex-between">
                 <p className="sm:text-16 text-14 font-medium">{discounted}</p>
                 <p className="sm:text-14 text-14 text-gray line-through">
@@ -99,10 +104,16 @@ const RelatedPro = () => {
                 <p
                   className={`text-10 bg-gradient-to-br from-slate-800 to-black text-white py-1 px-3 rounded-xl ${furniture.availableForRental === true ? "inline" : "hidden"}`}
                 >
-                  {furniture.availableForRental === true ? "Available for Rent" : ""}
+                  {furniture.availableForRental === true
+                    ? "Available for Rent"
+                    : ""}
                 </p>
-                <p className={`text-12 ${furniture.isStock ? "text-green-700" : "text-red-500"}`}>
-                  {furniture.isStock ? `Stock : ${furniture.stock}` : "Out of Stock"}
+                <p
+                  className={`text-12 ${furniture.isStock ? "text-green-700" : "text-red-500"}`}
+                >
+                  {furniture.isStock
+                    ? `Stock : ${furniture.stock}`
+                    : "Out of Stock"}
                 </p>
               </div>
             </div>

@@ -31,9 +31,6 @@ const Cart = () => {
       title: item.title,
       price: item.price,
       quantity: item.quantity,
-      rentalStartDate:
-        "rentalStartDate" in item ? item.rentalStartDate : undefined, // Include rental details in checkout data
-      rentalEndDate: "rentalEndDate" in item ? item.rentalEndDate : undefined,
     }));
 
     const queryParams = new URLSearchParams({
@@ -107,20 +104,6 @@ const Cart = () => {
                     <p className="md:text-16 sm:text-14 xs:text-12 text-10">
                       ${discountedPrice * item.quantity}
                     </p>
-
-                    {/* Display rental details if item is RentalItem */}
-                    {/* Display rental details if item is RentalItem */}
-                    {"rentalStartDate" in item &&
-                      item.rentalStartDate &&
-                      item.rentalEndDate && (
-                        <div className="text-sm text-gray-500 mt-2">
-                          <p>
-                            Rental Period:{" "}
-                            {item.rentalStartDate.toLocaleDateString()} to{" "}
-                            {item.rentalEndDate.toLocaleDateString()}
-                          </p>
-                        </div>
-                      )}
 
                     <div className="justify-self-center">
                       <IoMdTrash

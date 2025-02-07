@@ -17,7 +17,7 @@ const Hero = ({ title, navName, navLink }: THeroSec) => {
 
       <div className="relative z-10 flex-center flex-col h-[316px]">
         <Logo />
-        <h1 className="sm:text-48 xs:text-40 text-34 text-center font-semibold">
+        <h1 className="sm:text-48 xs:text-40 text-30 text-center font-semibold">
           {title}
         </h1>
         <ul className="flex-center gap-3">

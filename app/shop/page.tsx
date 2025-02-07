@@ -26,7 +26,7 @@ const Shop = () => {
     handleCategoryChange,
     handleClearSearchQuery,
   } = useContext(ProductContext) as CountContext;
-  
+
   const productsPerPage = 12; // Number of products per page
   const [currentPage, setCurrentPage] = useState(1);
   const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
