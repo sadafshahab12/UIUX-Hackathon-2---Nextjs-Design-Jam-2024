@@ -42,7 +42,7 @@ export interface CountContext {
   filteredProducts: ProductType[]; // Filtered list of products based on search and category
   handleSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void; // Handle search query change
   handleCategoryChange: (category: string) => void; // Handle category change
-  cartItems: CartItem[]; // Items in the cart
+  cartItems: (CartItem | RentalItem)[]; // Items in the cart
   removeFromCart: (productId: string) => void; // Remove product from cart by ID
   addToCart: (product: ProductType, quantity: number) => void; // Add product to cart with quantity
   handleAddToWishlist: (product: ProductType, quantity: number) => void; // Add product to wishlist with quantity
@@ -50,6 +50,7 @@ export interface CountContext {
   handleRemoveFromWishlist: (productId: string) => void;  // Remove product from wishlist by ID
   handleClearSearchQuery: () => void;
   setCartItems: (items: CartItem[]) => void;
+  addToRentalCart: (product: ProductType, rentalStartDate: string, rentalEndDate: string) => void;
 }
 
 // CartItem extends ProductType to add quantity for cart items
@@ -80,6 +81,8 @@ export interface CategoryType {
   categorySlug: string; // Category URL slug
   imageUrls: string[]; // Images for the category
 }
+
+// Customer data for the checkout page
 export interface CustomerData {
   firstName: string;
   lastName: string;
@@ -103,8 +106,9 @@ export interface CustomerData {
   };
 }
 
+// Sanity-specific customer data type
 export interface SanityCustomerType {
-  userId:string,
+  userId: string;
   _id: string;
   firstName: string;
   lastName: string;
@@ -119,11 +123,8 @@ export interface SanityCustomerType {
   paymentMethod: string;
 }
 
-// order page data type
+// Order page data type
 // Data type for Items in the order
-
-
-// Data type for the Customer
 export interface OrderPageCustomerType {
   _id: string;
   firstname: string;
@@ -136,18 +137,37 @@ export interface OrderPageCustomerType {
   country: string;
   province: string;
   additionalInfo: string;
-  
 }
 
-// Data type for the Order
 export interface OrderPageType {
   _id: string;
   order_date: string;
   _createdAt: string;
   _updatedAt: string;
-  cartItems:ProductType[];
+  cartItems: ProductType[];
   customer: OrderPageCustomerType;
-  status : string;
+  status: string;
   totalPrice: number;
   quantity: number;
+}
+
+// RentalItem data type for rental products
+export interface RentalItem {
+  _id: string;
+  title: string;
+  imageUrls: string[];
+  price: number;
+  dicountPercentage: number;
+  quantity: number;
+  rentalStartDate?: Date;
+  rentalEndDate?: Date;
+  slug: {
+    current: string;
+  };
+}
+
+// Extended RentalItem type
+export interface RentalItem extends ProductType {
+  rentalStartDate?: Date;
+  rentalEndDate?: Date;
 }

@@ -8,13 +8,13 @@ import Properties from "../components/ui/Properties";
 import { ProductContext } from "../components/context/ProductContext";
 import { CountContext, SanityCustomerType } from "../type/dataType";
 import Image from "next/image";
-import PlaceOrder from "../form-actions/PlaceOrder";
+
 import Swal from "sweetalert2";
 import { useUser } from "@clerk/clerk-react";
-import { set } from "sanity";
+import { createClient } from "next-sanity";
 
 const Checkout = () => {
-  const { cartItems, setCartItems } = useContext(
+  const { cartItems } = useContext(
     ProductContext
   ) as CountContext;
   const [paymentMethod, setPaymentMethod] = useState<string>("");
@@ -46,7 +46,7 @@ const Checkout = () => {
   });
 
   // Error state for each field
-  const [errors, setErrors] = useState<{ [key: string]: string }>({
+  const [errors] = useState<{ [key: string]: string }>({
     firstName: "",
     lastName: "",
     email: "",
@@ -71,75 +71,90 @@ const Checkout = () => {
   };
 
   // Validate form fields
-  const validateForm = () => {
-    const newErrors: { [key: string]: string } = {};
 
-    // Required fields
-    if (!customerData.firstName)
-      newErrors.firstName = "First name is required.";
-    if (!customerData.lastName) newErrors.lastName = "Last name is required.";
-    if (!customerData.email) newErrors.email = "Email is required.";
-    if (!customerData.phone) newErrors.phone = "Phone number is required.";
-    if (!customerData.streetAddress)
-      newErrors.streetAddress = "Street address is required.";
-    if (!customerData.city) newErrors.city = "City is required.";
-    if (!customerData.zipCode) newErrors.zipCode = "Zip code is required.";
-
-    // Email format check
-    if (customerData.email && !/\S+@\S+\.\S+/.test(customerData.email)) {
-      newErrors.email = "Please enter a valid email address.";
-    }
-
-    // Phone number format (basic check)
-
-    return newErrors;
-  };
 
   // Handle form submit
   const { user } = useUser(); // Get user from Clerk
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    const userId = user ? user.id : ""; // Get user ID (empty if not logged in)
-    console.log(userId);
-    // Validate the form
-    const validationErrors = validateForm();
-    setErrors(validationErrors);
-
-    if (Object.keys(validationErrors).length > 0) {
-      return; // Stop submission if there are errors
+  const handlePlaceOrder = async () => {
+    // Check if customer data is complete
+    if (
+      !customerData.firstName ||
+      !customerData.lastName ||
+      !customerData.email ||
+      !customerData.phone ||
+      !customerData.streetAddress ||
+      !customerData.city ||
+      !customerData.zipCode ||
+      !customerData.country ||
+      !customerData.province
+    ) {
+      Swal.fire("Error", "Please fill all customer data fields.", "error");
+      return; // Stop execution if customer data is incomplete
     }
-
-    // Add user ID to customer data
-    const updatedCustomerData = { ...customerData, userId , paymentMethod};
-
-    // Proceed with placing the order
-    await PlaceOrder(cartItems, updatedCustomerData);
-    Swal.fire({
-      title: "Order Placed!",
-      text: "Your order has been placed successfully.",
-      icon: "success",
-      confirmButtonText: "OK",
+  
+    // Check if there are no products in the cart
+    if (cartItems.length === 0) {
+      Swal.fire("Error", "Your cart is empty. Please add products to your cart.", "error");
+      return; // Stop execution if no products are in the cart
+    }
+  
+    const clientCreate = createClient({
+      projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
+      dataset: process.env.NEXT_PUBLIC_SANITY_DATASET,
+      apiVersion: "2025-01-18",
+      useCdn: true,
+      token: process.env.NEXT_PUBLIC_SANITY_TOKEN,
     });
-    // Reset form if no errors
-    setCustomerData({
-      userId: "",
-      _id: "",
-      firstName: "",
-      lastName: "",
-      country: "Sri Lanka",
-      streetAddress: "",
-      city: "",
-      province: "",
-      zipCode: "",
-      phone: "",
-      email: "",
-      additionalInfo: "",
-      paymentMethod: "",
-    });
-    setErrors({});
-    setCartItems([]);
+  
+    try {
+      // Create customer document in Sanity (if it doesn't exist)
+      const customerDoc = await clientCreate.create({
+        _type: "customer",
+        firstName: customerData.firstName,
+        lastName: customerData.lastName,
+        email: customerData.email,
+        phone: customerData.phone,
+        streetAddress: customerData.streetAddress,
+        city: customerData.city,
+        zipCode: customerData.zipCode,
+        country: customerData.country,
+        province: customerData.province,
+        additionalInfo: customerData.additionalInfo,
+        clerkUserId: user?.id,
+      });
+  
+      // Create the order document
+      const orderData = {
+        _type: "order",
+        customer: { _type: "reference", _ref: customerDoc._id }, // Reference to customer
+        cartItems: cartItems.map((item) => ({
+          _type: "reference",
+          _ref: item._id, // Reference to the furniture product
+        })),
+        quantities: cartItems.map((item) => item.quantity), // Include quantities in a separate array
+        totalPrice: total,
+        paymentMethod: paymentMethod,
+        status: "pending", // Default order status
+      };
+  
+      // Send the order data to Sanity
+      const response = await clientCreate.create(orderData);
+  
+      if (response) {
+        Swal.fire(
+          "Order Placed!",
+          "Your order has been successfully placed.",
+          "success"
+        );
+      } else {
+        throw new Error("Failed to create order");
+      }
+    } catch (error) {
+      Swal.fire("Error", "There was an issue placing your order.", "error");
+      console.log(error)
+    }
   };
-
+  
   return (
     <>
       <div>
@@ -153,7 +168,7 @@ const Checkout = () => {
               customerData={customerData}
               handleInputChange={handleInputChange}
               handleCountryChange={handleCountryChange}
-              handleSubmit={handleSubmit}
+              handleSubmit={handlePlaceOrder}
               errors={errors}
             />
           </div>
@@ -220,13 +235,25 @@ const Checkout = () => {
               </div>
               <div>
                 <div className="flex-no-center gap-4 text-gray mb-3">
-                  <input type="radio" id="pay1" name="payment" value={"Direct Bank Transfer"} onChange={handlePaymentChange} />
+                  <input
+                    type="radio"
+                    id="pay1"
+                    name="payment"
+                    value={"Direct Bank Transfer"}
+                    onChange={handlePaymentChange}
+                  />
                   <label htmlFor="pay1" className="lg:text-16 text-14">
                     Direct Bank Transfer
                   </label>
                 </div>
                 <div className="flex-no-center gap-4 text-gray mb-3">
-                  <input type="radio" id="pay2" name="payment"  value={"Cash On Delivery"} onChange={handlePaymentChange}/>
+                  <input
+                    type="radio"
+                    id="pay2"
+                    name="payment"
+                    value={"Cash On Delivery"}
+                    onChange={handlePaymentChange}
+                  />
                   <label htmlFor="pay2" className="lg:text-16 text-14">
                     Cash On Delivery
                   </label>
@@ -242,17 +269,11 @@ const Checkout = () => {
               </div>
               <div className="sm:text-center text-left flex-no-center gap-5">
                 <Button
-                  onClick={handleSubmit}
+                  onClick={handlePlaceOrder}
                   variant="outline"
                   className="lg:px-14 px-12 rounded-lg border-black"
                 >
                   Place order
-                </Button>
-                <Button
-                  variant="outline"
-                  className="lg:px-14 px-12 rounded-lg border-black"
-                >
-                  Make Payment
                 </Button>
               </div>
             </div>

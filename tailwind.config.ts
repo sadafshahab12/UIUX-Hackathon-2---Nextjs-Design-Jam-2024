@@ -60,6 +60,17 @@ export default {
           "4": "hsl(var(--chart-4))",
           "5": "hsl(var(--chart-5))",
         },
+        animation: {
+          fadeInOut: 'fadeInOut 1.5s ease-in-out infinite',
+          fadeInOut200: 'fadeInOut 1.5s ease-in-out 0.2s infinite',
+          fadeInOut400: 'fadeInOut 1.5s ease-in-out 0.4s infinite',
+        },
+        keyframes: {
+          fadeInOut: {
+            '0%, 100%': { opacity: '0' },
+            '50%': { opacity: '1' },
+          },
+        },
       },
       borderRadius: {
         lg: "var(--radius)",

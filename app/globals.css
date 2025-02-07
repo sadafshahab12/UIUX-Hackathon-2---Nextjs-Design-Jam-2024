@@ -203,3 +203,61 @@
     @apply bg-background text-foreground;
  }
 }
+
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+}
+
+@keyframes fadeInOut200 {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+}
+
+@keyframes fadeInOut400 {
+  0% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.5);
+  }
+}
+
+.animate-fadeInOut {
+  animation: fadeInOut 1.5s infinite;
+}
+
+.animate-fadeInOut200 {
+  animation: fadeInOut 2s infinite;
+}
+
+.animate-fadeInOut400 {
+  animation: fadeInOut 2.5s infinite;
+}

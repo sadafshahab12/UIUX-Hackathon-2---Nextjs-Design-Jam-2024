@@ -10,9 +10,8 @@ const ShopPro = ({ products }: { products: ProductType[] }) => {
   const {loading} = useContext(ProductContext) as CountContext
   if (loading) {
     return (
-  
+
         <Loading />
-   
     );
   }
   return (

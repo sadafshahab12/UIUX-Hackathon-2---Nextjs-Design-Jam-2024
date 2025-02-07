@@ -15,6 +15,7 @@ const Cart = () => {
     ProductContext
   ) as CountContext;
 
+  // Function to calculate total price including discounts and quantities
   const calculateTotal = () => {
     return cartItems.reduce((total, item) => {
       const discount = (item.price * item.dicountPercentage) / 100; // Calculate discount
@@ -23,16 +24,20 @@ const Cart = () => {
     }, 0);
   };
 
+  // Handle checkout by sending cart data as query params
   const handleCheckOut = () => {
     const cartData = cartItems.map((item) => ({
       id: item._id,
       title: item.title,
       price: item.price,
       quantity: item.quantity,
+      rentalStartDate:
+        "rentalStartDate" in item ? item.rentalStartDate : undefined, // Include rental details in checkout data
+      rentalEndDate: "rentalEndDate" in item ? item.rentalEndDate : undefined,
     }));
 
     const queryParams = new URLSearchParams({
-      cart: JSON.stringify(cartData), // Send only relevant data like ID, title, etc.
+      cart: JSON.stringify(cartData), // Send relevant data like ID, title, etc.
     }).toString();
 
     route.push(`/checkout?${queryParams}`);
@@ -102,6 +107,21 @@ const Cart = () => {
                     <p className="md:text-16 sm:text-14 xs:text-12 text-10">
                       ${discountedPrice * item.quantity}
                     </p>
+
+                    {/* Display rental details if item is RentalItem */}
+                    {/* Display rental details if item is RentalItem */}
+                    {"rentalStartDate" in item &&
+                      item.rentalStartDate &&
+                      item.rentalEndDate && (
+                        <div className="text-sm text-gray-500 mt-2">
+                          <p>
+                            Rental Period:{" "}
+                            {item.rentalStartDate.toLocaleDateString()} to{" "}
+                            {item.rentalEndDate.toLocaleDateString()}
+                          </p>
+                        </div>
+                      )}
+
                     <div className="justify-self-center">
                       <IoMdTrash
                         className="xs:w-6 w-4 xs:h-6 h-4 cursor-pointer"
@@ -114,6 +134,7 @@ const Cart = () => {
             )}
           </div>
         </div>
+
         <div className="part2 bg-[#F9F1E7] pt-5 lg:px-16 px-10 lg:pb-14 pb-10 text-center h-[18rem]">
           <h1 className="lg:text-30 text-24 font-semibold lg:mb-10 mb-6">
             Cart Totals
@@ -141,6 +162,7 @@ const Cart = () => {
           </div>
         </div>
       </div>
+
       <div className="mt-5">
         <Properties />
       </div>

@@ -8,7 +8,7 @@ import Logo from "./ui/Logo";
 
 import { ProductContext } from "./context/ProductContext";
 import { CountContext } from "../type/dataType";
-import { UserButton, useUser } from "@clerk/nextjs";
+import { SignInButton, UserButton, useUser } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 import { CiHeart } from "react-icons/ci";
 import { HiOutlineMenuAlt2 } from "react-icons/hi";
@@ -29,7 +29,10 @@ const Navbar = () => {
       <header className="fixed top-0 z-50 bg-white w-full">
         <nav className="flex justify-between md:px-10 xs:px-8 px-4 py-3">
           <div className="menu-bar cursor-pointer flex items-center sm:gap-4 gap-2">
-            <HiOutlineMenuAlt2 onClick={toggleMenu} className="h-5 w-5 md:hidden block" />
+            <HiOutlineMenuAlt2
+              onClick={toggleMenu}
+              className="h-5 w-5 md:hidden block"
+            />
             <div className="logo flex items-center md:gap-3 gap-1">
               <Logo />
               <h1
@@ -40,9 +43,7 @@ const Navbar = () => {
             </div>
           </div>
 
-          <ul
-            className={` md:flex items-center hidden lg:gap-20 gap-10`}
-          >
+          <ul className={` md:flex items-center hidden lg:gap-20 gap-10`}>
             <li>
               <Link href="/" className="text-16 font-medium">
                 Home
@@ -139,11 +140,9 @@ const Navbar = () => {
                   </div>
                 </>
               ) : (
-                <Link href="/sign-in">
-                  <button className="text-[0.75rem] bg-slate-800 text-white cursor-pointer py-2 px-3">
-                    Signin
-                  </button>
-                </Link>
+                <div className="text-[0.75rem] bg-slate-800 text-white cursor-pointer py-2 px-3">
+                  <SignInButton mode="modal" />
+                </div>
               ))}
           </div>
         </nav>

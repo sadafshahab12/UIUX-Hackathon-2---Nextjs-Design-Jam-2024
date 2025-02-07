@@ -14,12 +14,12 @@ import CustomerReview from "@/app/components/ui/CustomerReview";
 import { CiSquareMinus } from "react-icons/ci";
 import { ProductContext } from "@/app/components/context/ProductContext";
 import SocialIcons from "@/app/components/ui/SocialIcons";
-
 import RelatedPro from "@/app/components/Products/RelatedPro";
 import LoadingPage from "../loading";
 import Errpage from "../errpage";
 
 const SingleProduct = () => {
+  const router = useRouter();
   const { slug }: SlugType = useParams();
   const {
     count,
@@ -33,6 +33,43 @@ const SingleProduct = () => {
   const [selectedImgIndex, setSelectImageIndex] = useState(0);
   const [error, setError] = useState<string | null>(null);
   const route = useRouter();
+
+  // State variables for rental functionality
+  const [rentalStartDate, setRentalStartDate] = useState("");
+  const [rentalEndDate, setRentalEndDate] = useState("");
+
+  // Handlers for rental date changes
+  const handleStartDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setRentalStartDate(e.target.value);
+  };
+
+  const handleEndDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setRentalEndDate(e.target.value);
+  };
+
+  // Helper function to calculate rental days
+  const calculateRentalDays = (start: string, end: string) => {
+    if (!start || !end) return 0;
+    const startDate = new Date(start);
+    const endDate = new Date(end);
+    const diffTime = endDate.getTime() - startDate.getTime();
+    if (diffTime < 0) return 0; // invalid date range
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    return diffDays;
+  };
+
+  // Helper function to calculate the total rental price
+  const calculateRentalPrice = (
+    start: string,
+    end: string,
+    rentalPricePerDay: number
+  ) => {
+    const days = calculateRentalDays(start, end);
+    return days * rentalPricePerDay;
+  };
+
+  // Handler for adding a rental product to the cart
+ 
 
   useEffect(() => {
     const fetchSingleProductData = async () => {
@@ -70,14 +107,55 @@ const SingleProduct = () => {
           "We're really sorry, but we couldn't find the product you were looking for."
         );
       } finally {
-        setLoading(false);
+        setTimeout(() => {
+          setLoading(false); // After 5 seconds, stop loading
+        }, 1500);
       }
     };
     fetchSingleProductData();
   }, [slug]);
 
+  const handleAddToCartRental = (product: ProductType) => {
+    const rentalDays = calculateRentalDays(rentalStartDate, rentalEndDate);
+
+    if (rentalDays <= 0) {
+      alert("Please select a valid rental period.");
+      return;
+    }
+
+    const totalRentalPrice = calculateRentalPrice(
+      rentalStartDate,
+      rentalEndDate,
+      product.rentalPricePerDay ?? 0
+    );
+
+    // Create a rental product object with the necessary data
+    const rentalProduct = {
+      id: product._id, // Send the product ID
+      title: product.title,
+      rental: {
+        startDate: rentalStartDate,
+        endDate: rentalEndDate,
+        totalDays: rentalDays,
+        totalPrice: totalRentalPrice,
+      },
+      isRental: true,
+      imageUrls: product.imageUrls, // Add the imageUrls here
+      rentalPricePerDay: product.rentalPricePerDay,
+      quantity: count, // Add the quantity here
+    };
+
+    // Convert the rentalProduct object into a JSON string and encode it for the URL
+    const queryString = new URLSearchParams({
+      product: JSON.stringify(rentalProduct), // Send the entire object as a string
+    }).toString();
+
+    // Navigate to the rental cart page with the rentalProduct data in the query string
+    router.push(`/rental-cart?${queryString}`);
+  };
+
   if (loading) {
-    return <LoadingPage />;
+    return( <div ><LoadingPage /></div>);
   }
 
   if (error) {
@@ -104,7 +182,8 @@ const SingleProduct = () => {
             .join("");
         };
         return (
-          <div key={index} className={` md:mt-[5rem] xs:mt-[4rem] mt-[3.8rem]`}>
+          <div key={index} className="md:mt-[5rem] xs:mt-[4rem] mt-[3.8rem]">
+            {/* Breadcrumbs */}
             <div>
               <ul className="flex-no-center sm:gap-7 xs:gap-5 gap-3 bg-[#F9F1E7] py-5 sm:px-24 xs:px-12 xss:px-5 px-3">
                 <li>
@@ -141,15 +220,18 @@ const SingleProduct = () => {
                 <li className="sm:text-16 text-14">{singleFurniture.title}</li>
               </ul>
             </div>
+
+            {/* Main Product View */}
             <div className="product-view lg:py-10 py-8 lg:px-14 sm:px-8 xs:px-10 px-5 flex md:flex-row flex-col gap-5 ">
-              <div className="part1 flex sm:flex-row flex-col-reverse gap-4 md:justify-self-auto justify-self-center ">
-                <div className="img-col1 lg:space-y-5 sm:space-y-3 space-y-0 sm:block flex-center  sm:gap-4 gap-3">
+              {/* Product Images */}
+              <div className="part1 flex sm:flex-row flex-col-reverse gap-4 md:justify-self-auto justify-self-center">
+                <div className="img-col1 lg:space-y-5 sm:space-y-3 space-y-0 sm:block flex-center sm:gap-4 gap-3">
                   {singleFurniture.imageUrls
                     .slice(0, 4)
                     .map((url: string, index: number) => (
                       <div
                         key={index}
-                        className={`md:w-[100px] sm:w-[80px] xs:w-[100px] xss:w-[70px] w-[60px] md:h-[100px] sm:h-[80px] xs:h-[100px] xss:h-[70px] h-[60px] p-1 sm:rounded-[10px]  rounded-[8px] cursor-pointer border border-slate-800 ${
+                        className={`md:w-[100px] sm:w-[80px] xs:w-[100px] xss:w-[70px] w-[60px] md:h-[100px] sm:h-[80px] xs:h-[100px] xss:h-[70px] h-[60px] p-1 sm:rounded-[10px] rounded-[8px] cursor-pointer border border-slate-800 ${
                           index === selectedImgIndex
                             ? "border-2 border-[#B88E2F]"
                             : "bg-[#F9F1E7]"
@@ -162,7 +244,7 @@ const SingleProduct = () => {
                           width={500}
                           height={500}
                           className="w-full h-full object-contain sm:rounded-[8px] rounded-[6px]"
-                           loading="lazy"
+                          loading="lazy"
                         />
                       </div>
                     ))}
@@ -177,16 +259,17 @@ const SingleProduct = () => {
                       alt="img"
                       className="w-full h-full object-cover rounded-[8px]"
                       loading="lazy"
-            
                     />
                   </div>
                 </div>
               </div>
-              <div className="part2  md:space-y-4 space-y-2 ">
+
+              {/* Product Details */}
+              <div className="part2 md:space-y-4 space-y-2">
                 <h1 className="lg:text-42 xs:text-38 xss:text-30 text-28 font-semibold">
                   {singleFurniture.title}
                 </h1>
-                <div className="flex-no-center gap-10 ">
+                <div className="flex-no-center gap-10">
                   <p className="discounted-price lg:text-22 sm:text-18 text-16 text-slate-700">
                     ${discountedPrice}
                   </p>
@@ -205,6 +288,7 @@ const SingleProduct = () => {
                 </div>
 
                 <CustomerReview />
+
                 <div className="flex-between sm:flex-row flex-col gap-4 w-full">
                   <p
                     className={`${singleFurniture.availableForRental ? "inline" : "hidden"} text-12 bg-gradient-to-br from-slate-800 to-black text-white py-1 px-3 rounded-xl sm:w-auto w-full text-center`}
@@ -216,17 +300,19 @@ const SingleProduct = () => {
                   <p
                     className={`text-sm bg-yellow-500 py-1 px-4 rounded-2xl sm:w-auto w-full text-center ${singleFurniture.rentalPricePerDay ? "block" : "hidden"}`}
                   >
-                    Rental Price: {singleFurniture.rentalPricePerDay}
+                    Rental Price: ${singleFurniture.rentalPricePerDay}
                   </p>
                 </div>
+
                 <div>
                   <p className="lg:text-14 sm:text-12 text-10 lg:leading-7 sm:leading-6 leading-5 text-justify">
                     {singleFurniture.description}
                   </p>
                 </div>
 
+                {/* Purchase Buttons */}
                 <div className="buttons grid xss:grid-cols-3 grid-cols-2 lg:gap-5 gap-3 pt-4 w-full">
-                  <div className="flex-center gap-4  border border-slate-800 p-2 rounded-md w-full">
+                  <div className="flex-center gap-4 border border-slate-800 p-2 rounded-md w-full">
                     <button onClick={countDecrement}>
                       <CiSquareMinus className="lg:w-8 w-6 lg:h-8 h-6" />
                     </button>
@@ -250,6 +336,56 @@ const SingleProduct = () => {
                     Add to WishList
                   </button>
                 </div>
+
+                {/* Rental Options (Shown only if availableForRental is true) */}
+                {singleFurniture.availableForRental && (
+                  <div className="rental-options mt-4 p-4 border rounded-md">
+                    <h3 className="text-lg font-semibold mb-2">
+                      Rent This Product
+                    </h3>
+                    <div className="flex flex-col gap-3">
+                      <label className="text-sm">
+                        Rental Start Date:
+                        <input
+                          type="date"
+                          value={rentalStartDate}
+                          onChange={handleStartDateChange}
+                          className="border p-1 ml-2"
+                        />
+                      </label>
+                      <label className="text-sm">
+                        Rental End Date:
+                        <input
+                          type="date"
+                          value={rentalEndDate}
+                          onChange={handleEndDateChange}
+                          className="border p-1 ml-2"
+                        />
+                      </label>
+                    </div>
+                    <div className="mt-3 text-sm">
+                      <p>
+                        Total Rental Days:{" "}
+                        {calculateRentalDays(rentalStartDate, rentalEndDate)}
+                      </p>
+                      <p>
+                        Total Rental Price: $
+                        {calculateRentalPrice(
+                          rentalStartDate,
+                          rentalEndDate,
+                          singleFurniture.rentalPricePerDay ?? 0
+                        )}
+                      </p>
+                    </div>
+                    <button
+                      onClick={() => handleAddToCartRental(singleFurniture)}
+                      className="mt-3 border border-slate-800 py-2 px-4 rounded-md"
+                    >
+                      Rent Now
+                    </button>
+                  </div>
+                )}
+
                 <div className="border-b border-gray-400 lg:py-5 py-3"></div>
                 <div className="text-16 text-gray grid grid-cols-[1fr_1fr_5fr] mt-5">
                   <div className="lg:space-y-4 space-y-2 lg:text-16 text-14 grid">
@@ -282,7 +418,9 @@ const SingleProduct = () => {
                 </div>
               </div>
             </div>
-            <div className="border-b border-gray-400 lg:my-8 my-4 "></div>
+
+            {/* Additional Information */}
+            <div className="border-b border-gray-400 lg:my-8 my-4"></div>
             <div className="lg:px-[10rem] sm:px-[4rem] xss:px-[2rem] px-[1.5rem] xs:space-y-7 space-y-3">
               <div className="flex-center xs:flex-row flex-col lg:gap-10 xs:gap-8 gap-2">
                 <h1 className="lg:text-22 text-18 font-semibold">
@@ -295,17 +433,19 @@ const SingleProduct = () => {
                   Reviews [5]
                 </p>
               </div>
-              <div className="lg:text-16 xss:text-14 text-12 text-gray leading-6 ">
+              <div className="lg:text-16 xss:text-14 text-12 text-gray leading-6">
                 <p className="text-justify">{singleFurniture.description}</p>
               </div>
             </div>
+
+            {/* Additional Images */}
             <div className="images flex-center sm:flex-row flex-col sm:gap-8 gap-4 md:px-[5rem] px-[2rem] py-5">
               {singleFurniture.imageUrls
                 .slice(0, 2)
                 .map((furniture: string, index: number) => (
                   <div
                     key={index}
-                    className="lg:w-[605px] sm:w-[550px]  xs:w-[400px] w-[270px] lg:h-[348px] sm:h-[300px] xs:h-[250px] h-[150px] bg-[#fdcf96] rounded-[10px] p-2 "
+                    className="lg:w-[605px] sm:w-[550px] xs:w-[400px] w-[270px] lg:h-[348px] sm:h-[300px] xs:h-[250px] h-[150px] bg-[#fdcf96] rounded-[10px] p-2"
                   >
                     <Image
                       src={furniture}
@@ -317,7 +457,10 @@ const SingleProduct = () => {
                   </div>
                 ))}
             </div>
+
             <div className="border-b border-gray-400 sm:my-5 my-2"></div>
+
+            {/* Related Products */}
             <div className="lg:p-10 p-5">
               <h1 className="sm:text-34 xss:text-28 text-24 font-semibold text-center pb-5">
                 Related Products
@@ -328,7 +471,7 @@ const SingleProduct = () => {
               <div className="button text-center mt-10">
                 <Button
                   variant={"outline"}
-                  className="rounded-none border border-[#B88E2F]  font-semibold text-16 px-10 text-[#B88E2F] hover:text-[#d6a637] transition duration-300"
+                  className="rounded-none border border-[#B88E2F] font-semibold text-16 px-10 text-[#B88E2F] hover:text-[#d6a637] transition duration-300"
                   onClick={() => route.push("/shop")}
                 >
                   Show More

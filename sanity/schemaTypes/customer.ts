@@ -4,8 +4,8 @@ export const customerSchema = {
   type: "document",
   fields: [
     {
-      name: "userId",
-      title: "User ID",
+      name: "clerkUserId",
+      title: "Clerk User ID",
       type: "string",
     },
     {
