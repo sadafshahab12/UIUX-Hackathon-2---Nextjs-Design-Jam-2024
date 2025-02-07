@@ -340,7 +340,7 @@ const SingleProduct = () => {
                 {/* Rental Options (Shown only if availableForRental is true) */}
                 {singleFurniture.availableForRental && (
                   <div className="rental-options mt-4 p-4 border rounded-md">
-                    <h3 className="text-lg font-semibold mb-2">
+                    <h3 className="sm:text-lg text-14 font-semibold mb-2">
                       Rent This Product
                     </h3>
                     <div className="flex flex-col gap-3">
@@ -379,7 +379,7 @@ const SingleProduct = () => {
                     </div>
                     <button
                       onClick={() => handleAddToCartRental(singleFurniture)}
-                      className="mt-3 border border-slate-800 py-2 px-4 rounded-md"
+                      className="mt-3 border border-slate-800 py-2 px-4 rounded-md text-14"
                     >
                       Rent Now
                     </button>

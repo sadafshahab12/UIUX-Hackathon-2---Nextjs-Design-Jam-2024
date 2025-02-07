@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { Suspense, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Image from "next/image";
 
@@ -144,4 +144,10 @@ const RentalCart = () => {
   );
 };
 
-export default RentalCart;
+export default function Page() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <RentalCart />
+    </Suspense>
+  );
+}
