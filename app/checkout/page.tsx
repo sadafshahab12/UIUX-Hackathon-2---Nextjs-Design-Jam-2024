@@ -224,7 +224,7 @@ const Checkout = () => {
                         </p>
                       </div>
                       <p className="lg:text-16 text-14 font-light">
-                        Rs. {discountedPrice * item.quantity}
+                        ${discountedPrice * item.quantity}
                       </p>
                     </div>
                   </div>
@@ -233,13 +233,13 @@ const Checkout = () => {
               <div className="flex-between">
                 <p className="lg:text-16 text-14">Subtotal</p>
                 <p className="flex-between lg:text-16 text-14 font-light">
-                  Rs. {total}
+                  ${total}
                 </p>
               </div>
               <div className="flex-between">
                 <p className="lg:text-16 text-14">Total</p>
                 <p className="flex-between lg:text-24 sm:text-22 text-20 font-bold text-[#B88E2F]">
-                  Rs. {total}
+                  ${total}
                 </p>
               </div>
             </div>
