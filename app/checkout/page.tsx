@@ -14,7 +14,9 @@ import { useUser } from "@clerk/clerk-react";
 import { createClient } from "next-sanity";
 
 const Checkout = () => {
-  const { cartItems } = useContext(ProductContext) as CountContext;
+  const { cartItems, setCartItems } = useContext(
+    ProductContext
+  ) as CountContext;
   const [paymentMethod, setPaymentMethod] = useState<string>("");
 
   const handlePaymentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -72,6 +74,9 @@ const Checkout = () => {
 
   // Handle form submit
   const { user } = useUser(); // Get user from Clerk
+  const handleClearCart = () => {
+    setCartItems([]);
+  };
   const handlePlaceOrder = async () => {
     // Check if customer data is complete
     if (
@@ -153,6 +158,23 @@ const Checkout = () => {
     } catch (error) {
       Swal.fire("Error", "There was an issue placing your order.", "error");
       console.log(error);
+    } finally {
+      handleClearCart();
+      setCustomerData({
+        userId: "",
+        _id: "",
+        firstName: "",
+        lastName: "",
+        country: "Sri Lanka", // default country
+        streetAddress: "",
+        city: "",
+        province: "",
+        zipCode: "",
+        phone: "",
+        email: "",
+        additionalInfo: "",
+        paymentMethod: "",
+      });
     }
   };
 

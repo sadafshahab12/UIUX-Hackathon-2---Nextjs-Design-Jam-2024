@@ -130,6 +130,8 @@ export const ProductProvider = ({ children }: ProductProviderType) => {
         return updatedCart;
       }
     });
+
+    setCount(1)
     Swal.fire({
       text: `${product.title} added to Cart!`,
       icon: "success",

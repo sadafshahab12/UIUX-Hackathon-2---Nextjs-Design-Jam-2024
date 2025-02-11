@@ -44,8 +44,8 @@ const RentalCheckout = () => {
   const [isManualState, setIsManualState] = useState(false);
 
   console.log(setState);
-  const quantity = rentalProduct.quantity;
-  const totalPrice = rentalProduct.totalPrice;
+  const quantity = rentalProduct ? rentalProduct.quantity : 0;
+  const totalPrice = rentalProduct ? rentalProduct.totalPrice : 0;
 
   useEffect(() => {
     fetch("https://restcountries.com/v3.1/all")
@@ -204,8 +204,13 @@ const RentalCheckout = () => {
   };
   if (!rentalProduct) {
     return (
-      <div className="text-center text-red-500 font-semibold">
-        <p>CheckOut is Empty</p>
+      <div className="text-center font-semibold h-screen">
+        <Hero
+          navName="Rental CheckOut"
+          title="Rental CheckOut"
+          navLink="/rental-checkout"
+        />
+        <p className="py-5">CheckOut is Empty</p>
       </div>
     );
   }
