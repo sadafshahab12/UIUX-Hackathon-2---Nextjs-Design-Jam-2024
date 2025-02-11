@@ -93,9 +93,9 @@ const RelatedPro = () => {
                 {furniture.title}
               </h1>
               <div className="flex-between">
-                <p className="sm:text-16 text-14 font-medium">{discounted}</p>
+                <p className="sm:text-16 text-14 font-medium">${discounted}</p>
                 <p className="sm:text-14 text-14 text-gray line-through">
-                  {!furniture.isNew && furniture.dicountPercentage > 0
+                  ${!furniture.isNew && furniture.dicountPercentage > 0
                     ? furniture.price
                     : ""}
                 </p>
